@@ -32,3 +32,4 @@ Thumbs.db
 
 # EF Core Migrations snapshots (optional if you want clean repo)
 **/Migrations/*ModelSnapshot.cs
+bin/Debug/net9.0/appsettings.Development.json
