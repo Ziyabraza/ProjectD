@@ -1,0 +1,34 @@
+# Build files
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# Rider
+.idea/
+
+# ASP.NET Secret settings
+secrets.json
+
+# Environment-specific config
+appsettings.Development.json
+
+# Logs
+*.log
+
+# NPM / Node if used
+node_modules/
+
+# Mac / Linux / Windows system files
+.DS_Store
+Thumbs.db
+
+# EF Core Migrations snapshots (optional if you want clean repo)
+**/Migrations/*ModelSnapshot.cs
