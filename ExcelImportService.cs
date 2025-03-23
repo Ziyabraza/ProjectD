@@ -114,8 +114,8 @@ public class ExcelImportService
                 // Skip row[82] → Forecast
                 Parked = ParseBool(row[83]),
                 Seizoen = row[84]?.ToString(),
-                Touchpoints = new List<Touchpoint>()
             };
+            flights[flight.Id] = flight;
             _context.Flights.Add(flight);
 
         }
@@ -135,10 +135,10 @@ public class ExcelImportService
                 {
                     FlightId = flightId,
                     TouchpointType = row[10]?.ToString(),
-                    TouchpointTime = DateTime.Parse(row[11]?.ToString()),
-                    TouchpointPax = (int)Math.Round(double.Parse(row[12]?.ToString().Replace(",", ".") ?? "0"))
+                    TouchpointTime = ParseDate(row[11]),
+                    TouchpointPax = ParseDouble(row[12]),
                 };
-
+                _context.Touchpoints.Add(touchpoint);
                 flights[flightId].Touchpoints.Add(touchpoint);
             }
         }
@@ -147,6 +147,7 @@ public class ExcelImportService
         _context.Flights.AddRange(flights.Values);
         await _context.SaveChangesAsync();
     }
+
 
     private DateTime ParseDate(object value)
     {

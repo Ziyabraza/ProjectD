@@ -109,5 +109,5 @@ public class Flight
     public bool Parked { get; set; }
     public string Seizoen { get; set; }
 
-    public List<Touchpoint> Touchpoints { get; set; }
+    public ICollection<Touchpoint> Touchpoints { get; set; } = new List<Touchpoint>();
 }
