@@ -18,7 +18,7 @@ obj/
 secrets.json
 
 # Environment-specific config
-appsettings.Development.json
+appsettings.json
 
 # Logs
 *.log
