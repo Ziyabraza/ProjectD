@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\ProjectD.csproj": {}
+    "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-2\\ProjectD\\ProjectD.csproj": {}
   },
   "projects": {
-    "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\ProjectD.csproj": {
+    "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-2\\ProjectD\\ProjectD.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\ProjectD.csproj",
+        "projectUniqueName": "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-2\\ProjectD\\ProjectD.csproj",
         "projectName": "ProjectD",
-        "projectPath": "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\ProjectD.csproj",
-        "packagesPath": "C:\\Users\\huday\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\obj\\",
+        "projectPath": "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-2\\ProjectD\\ProjectD.csproj",
+        "packagesPath": "C:\\Users\\borag\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-2\\ProjectD\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\huday\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\borag\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -75,6 +75,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.3, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.72, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",

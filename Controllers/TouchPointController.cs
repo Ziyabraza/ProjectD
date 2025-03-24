@@ -28,6 +28,13 @@ namespace ProjectD.Controllers
 
         private string ToString(Touchpoint touchpoint) => $"{touchpoint.FlightId} || {touchpoint.TouchpointType} || {touchpoint.TouchpointTime} || {touchpoint.TouchpointPax}";
 
+        private Flight GetFlight(int id)
+        {
+            var flight = _context.Flights.Find(id);
+            if(flight == null) { return null; }
+            return flight;
+        }
+
         [HttpGet("page{page}")]
         public async Task<IActionResult> GetPage1(int page)
         {
@@ -38,7 +45,7 @@ namespace ProjectD.Controllers
             return Ok(PageMessage(page, start, end, touchpoints));
         }
         
-        [HttpGet("SearchByFlightID{id}")]
+        [HttpGet("SearchByFlightID/{id}")]
         public async Task<IActionResult> GetByID(int id)
         {
             bool found = false;
@@ -57,6 +64,12 @@ namespace ProjectD.Controllers
                 return Ok(message);
             }
             return NotFound($"Touchpoint with ID {id} not found.");
+        }
+        [HttpGet("")]
+        public async Task<IActionResult> GetAircraft(string Aircraft)
+        {
+            var touchpoints = await _context.Touchpoints.ToArrayAsync();
+            return Ok(touchpoints);
         }
     }
 }
