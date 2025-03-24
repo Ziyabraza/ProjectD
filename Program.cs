@@ -2,33 +2,36 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ProjectD;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Voeg de FlightDBContext toe aan Dependency Injection en verbind met PostgreSQL
-builder.Services.AddDbContext<FlightDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Voeg controllers toe (ASP.NET Core Web API)
-builder.Services.AddControllers();
-
-// Voeg CORS toe als je frontend en backend vanaf verschillende domeinen gebruikt (optioneel)
-builder.Services.AddCors(options =>
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
-    options.AddPolicy("AllowAll",
-        builder => builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
+    Args = args,
+    EnvironmentName = Environments.Development
 });
+
+// Add services to the container.
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddDbContext<FlightDBContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<ExcelImportService>();
 
 var app = builder.Build();
 
-// Gebruik CORS (indien nodig)
-app.UseCors("AllowAll");
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
 
-app.UseRouting();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseAuthorization();
-
 app.MapControllers();
 
-app.Run();
+
+
+app.Run(); 
