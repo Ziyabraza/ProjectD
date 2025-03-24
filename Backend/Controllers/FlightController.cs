@@ -16,14 +16,13 @@ namespace ProjectD
             _context = context;
         }
 
-        // Haal vlucht op op basis van een FlightNumber (string)
+        // Zoek vlucht op basis van een FlightNumber als string
         [HttpGet("{flightNumber}")]
         public async Task<ActionResult<Flight>> GetFlightByFlightNumber(string flightNumber)
         {
-            Console.WriteLine("[DEBUG] FlightNumber ontvangen: " + flightNumber);  // Debuglog
+            Console.WriteLine("[DEBUG] FlightNumber ontvangen: " + flightNumber);  // Log de input
 
-            var flight = await _context.Flights.FirstOrDefaultAsync(f => f.FlightNumber == flightNumber);  // Match op string
-
+            var flight = await _context.Flights.FirstOrDefaultAsync(f => f.FlightNumber == flightNumber);
             if (flight == null)
             {
                 Console.WriteLine("[DEBUG] Flight niet gevonden.");

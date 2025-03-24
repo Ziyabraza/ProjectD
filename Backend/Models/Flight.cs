@@ -9,7 +9,7 @@ namespace ProjectD
         public int Id { get; set; }
         public int TimetableId { get; set; }
         public string TrafficType { get; set; }
-        public string FlightNumber { get; set; }  // Veranderd naar string
+        public string FlightNumber { get; set; }  // FlightNumber is string
         public bool Diverted { get; set; }
         public bool Nachtvlucht { get; set; }
         public string FlightCode { get; set; }
@@ -19,7 +19,7 @@ namespace ProjectD
         public DateTime ScheduledUTC { get; set; }
         public DateTime ActualUTC { get; set; }
         public DateTime ScheduledLocal { get; set; }
-        public DateTime ActualLocal { get; set; }
+        public DateTime actuallocal { get; set; }
         public string Bewegingen { get; set; }
         public string Parkeerpositie { get; set; }
         public bool Bus { get; set; }
