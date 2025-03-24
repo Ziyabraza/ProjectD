@@ -1,38 +1,25 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using ProjectD;
+var builder = WebApplication.CreateBuilder(args);
 
-var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+// Voeg CORS toe
+builder.Services.AddCors(options =>
 {
-    Args = args,
-    EnvironmentName = Environments.Development
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
 });
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
-builder.Services.AddDbContext<FlightDBContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<ExcelImportService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Gebruik CORS policy
+app.UseCors("AllowAll");
+
+app.UseRouting();
+app.UseEndpoints(endpoints =>
 {
-
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseAuthorization();
-app.MapControllers();
-
-
+    endpoints.MapControllers();
+});
 
 app.Run();
-
