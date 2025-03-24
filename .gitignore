@@ -34,3 +34,4 @@ Thumbs.db
 **/Migrations/*ModelSnapshot.cs
 bin/Debug/net9.0/appsettings.Development.json
 /obj
+/obj
