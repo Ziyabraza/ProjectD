@@ -19,6 +19,7 @@ secrets.json
 
 # Environment-specific config
 appsettings.Development.json
+appsettings.json
 
 # Logs
 *.log
@@ -34,3 +35,5 @@ Thumbs.db
 **/Migrations/*ModelSnapshot.cs
 bin/Debug/net9.0/appsettings.Development.json
 /obj
+/Migrations
+appsettings.json
