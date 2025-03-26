@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ExcelDataReader;
 using ProjectD.Models;
+using System.Threading.Tasks;
 
 namespace ProjectD.Controllers
 {
@@ -30,7 +30,5 @@ namespace ProjectD.Controllers
 
             return Ok("Data imported into PostgreSQL successfully.");
         }
-
-
     }
 }
