@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using ProjectD;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -15,6 +18,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Logging.AddOpenTelemetry(Logging =>
+{
+    Logging.IncludeFormattedMessage = true;
+    Logging.IncludeScopes = true;
+});
 
 builder.Services.AddDbContext<FlightDBContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<ExcelImportService>();
