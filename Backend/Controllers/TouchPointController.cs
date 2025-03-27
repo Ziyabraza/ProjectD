@@ -43,22 +43,21 @@ namespace ProjectD.Controllers
         [HttpGet("SearchByFlightID{id}")]
         public async Task<IActionResult> GetByID(int id)
         {
+
             bool found = false;
-            string message = "Match(es) found:\n\n";
+            // string message = "Match(es) found:\n\n";
+            List<Touchpoint> results = new();
             var touchpoints = await _context.Touchpoints.ToArrayAsync();
             foreach(var touchpoint in touchpoints)
             {
                 if(touchpoint.FlightId == id)
                 {
-                    found = true;
-                    message += ToString(touchpoint) + "\n";
+                    // found = true;
+                    results.Add(touchpoint);
                 }
             }
-            if(found)
-            {
-                return Ok(message);
-            }
-            return NotFound($"Touchpoint with ID {id} not found.");
+            if(results.Count == 0) { return NotFound($"No touchpoints found for Flight ID {id}."); }
+            return Ok(results);
         }
     }
 }
