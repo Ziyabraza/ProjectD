@@ -19,7 +19,8 @@ namespace ProjectD.Controllers
         private string PageMessage(int page, int start, int end, Touchpoint[] touchpoints)
         {
             string message = $"Touchpoint page{page} ({start+1} - {end+1}):\n\n";
-            if(touchpoints.Length < start) { return "Status 400"; }
+            if(touchpoints.Length == 0) { return "Status 600"; } // this will throw status NotFound
+            if(touchpoints.Length < start) { return "Status 601"; } // this will throw status NotFound
             for(int i = start; i < end; i++)
             {
                 if(touchpoints.Length>i) { message += $"{i + 1} {touchpoints[i].FlightId} || {touchpoints[i].TouchpointType} || {touchpoints[i].TouchpointTime} || {touchpoints[i].TouchpointPax} \n"; }
@@ -29,18 +30,19 @@ namespace ProjectD.Controllers
 
         private string ToString(Touchpoint touchpoint) => $"{touchpoint.FlightId} || {touchpoint.TouchpointType} || {touchpoint.TouchpointTime} || {touchpoint.TouchpointPax}";
 
-        [HttpGet("page{page}")]
+        [HttpGet("page/{page}")]
         public async Task<IActionResult> GetPage1(int page)
         {
-            if(page < 1) { return BadRequest("Page number must be greater than 0."); }
+            if(page < 1) { return BadRequest(new Error(400, "Page number must be greater than 0.", Request.Path)); }
             int start = page > 1 ? 1000*(page-1) - 1 : 0;
             int end = (1000*page) - 1;
             var touchpoints = await _context.Touchpoints.ToArrayAsync();
-            if(PageMessage(page, start, end, touchpoints) == "Status 400") { return BadRequest("No touchpoints found."); }  
+            if(PageMessage(page, start, end, touchpoints) == "Status 600") { return NotFound(new Error(404, Request.Path, $"An error acured.\n there are no Touchpoints found make contact with Webprovider if its ongoing issue.\n Sorry for inconvinence.")); }
+            if(PageMessage(page, start, end, touchpoints) == "Status 601") { return NotFound(new Error(404, Request.Path, $"No touchpoints found past this page.\nonly {touchpoints.Length} touchpoints recorded. {Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00)} pages recorded")); }  
             return Ok(PageMessage(page, start, end, touchpoints));
         }
         
-        [HttpGet("SearchByFlightID{id}")]
+        [HttpGet("SearchByFlightID/{id}")]
         public async Task<IActionResult> GetByID(int id)
         {
 
@@ -56,7 +58,8 @@ namespace ProjectD.Controllers
                     results.Add(touchpoint);
                 }
             }
-            if(results.Count == 0) { return NotFound($"No touchpoints found for Flight ID {id}."); }
+            if(touchpoints.Length == 0) { return NotFound(new Error(404, Request.Path, "An error acured.\n there are no Touchpoints found make contact with Webprovider if its ongoing issue.\n Sorry for inconvinence.")); }
+            if(results.Count == 0) { return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}.")); }
             return Ok(results);
         }
     }

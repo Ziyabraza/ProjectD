@@ -1,0 +1,36 @@
+[
+{
+  "statusCode": 400,
+  "details": "Bad Request - The server could not understand the request.",
+  "message": "/api/Touchpoint/page/0",
+  "url": "Page number must be greater than 0."
+}
+,
+{
+  "statusCode": 400,
+  "details": "Bad Request - The server could not understand the request.",
+  "message": "/api/Touchpoint/page/0",
+  "url": "Page number must be greater than 0."
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded. 286 pages recorded",
+  "url": "/api/Touchpoint/page/10000"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded. 286 pages recorded",
+  "url": "/api/Touchpoint/page/10000"
+}
+,
+{
+  "statusCode": 400,
+  "details": "Bad Request - The server could not understand the request.",
+  "message": "/api/Touchpoint/page/-9",
+  "url": "Page number must be greater than 0."
+}
+]

@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using ProjectD;
 using Serilog;
 using Serilog.Sinks.PostgreSQL;
+using Serilog.Sinks.PostgreSQL.ColumnWriters;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -21,12 +23,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Logging.AddOpenTelemetry(Logging =>
-{
-    Logging.IncludeFormattedMessage = true;
-    Logging.IncludeScopes = true;
-});
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 var columnOptions = new Dictionary<string, ColumnWriterBase>
@@ -37,12 +33,25 @@ var columnOptions = new Dictionary<string, ColumnWriterBase>
     { "source", new SinglePropertyColumnWriter("REST_API") }
 };
 
-Log.Logger = new LoggerConfiguration()
+Serilog.Log.Logger = new LoggerConfiguration()
     .WriteTo.Console() // Log to console
-    .WriteTo.PostgreSQL(connectionString, "public.logs", columnOptions) // Log to PostgreSQL
+    .WriteTo.PostgreSQL(connectionString, "public.logs", columnOptions, needAutoCreateTable: true) // Log to PostgreSQL
     .CreateLogger();
 
-Log.Information("Test log message 2");
+Serilog.Log.Information("Test log message 2");
+
+using (var conn = new NpgsqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")))
+{
+    try
+    {
+        conn.Open();
+        Console.WriteLine("Database connection successful!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Database connection failed: {ex.Message}");
+    }
+}
 
 builder.Logging.ClearProviders();  // Clear default providers to prevent duplication
 builder.Logging.AddSerilog(); 
