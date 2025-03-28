@@ -33,7 +33,7 @@ namespace ProjectD.Controllers
         [HttpGet("page/{page}")]
         public async Task<IActionResult> GetPage1(int page)
         {
-            if(page < 1) { return BadRequest(new Error(400, "Page number must be greater than 0.", Request.Path)); }
+            if(page < 1) { return BadRequest(new Error(400, Request.Path, "Page number must be greater than 0.")); }
             int start = page > 1 ? 1000*(page-1) - 1 : 0;
             int end = (1000*page) - 1;
             var touchpoints = await _context.Touchpoints.ToArrayAsync();
