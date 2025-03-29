@@ -13,6 +13,7 @@ public class Error
         {
             return StatusCode switch
             {
+                302 => "Redirected - User has been redirected to another URL.",
                 400 => "Bad Request - The server could not understand the request.",
                 401 => "Unauthorized - Authentication is required.",
                 403 => "Forbidden - You do not have permission.",

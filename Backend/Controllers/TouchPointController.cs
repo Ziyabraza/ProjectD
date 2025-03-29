@@ -33,12 +33,21 @@ namespace ProjectD.Controllers
         [HttpGet("page/{page}")]
         public async Task<IActionResult> GetPage1(int page)
         {
-            if(page < 1) { return BadRequest(new Error(400, Request.Path, "Page number must be greater than 0.")); }
+            if(page < 1) 
+            { 
+                new Error(302, Request.Path, "Page number must be greater than 0.");
+                return Redirect("1"); // moves user to page 1 if page is less than 1
+            }
             int start = page > 1 ? 1000*(page-1) - 1 : 0;
             int end = (1000*page) - 1;
             var touchpoints = await _context.Touchpoints.ToArrayAsync();
-            if(PageMessage(page, start, end, touchpoints) == "Status 600") { return NotFound(new Error(404, Request.Path, $"An error acured.\n there are no Touchpoints found make contact with Webprovider if its ongoing issue.\n Sorry for inconvinence.")); }
-            if(PageMessage(page, start, end, touchpoints) == "Status 601") { return NotFound(new Error(404, Request.Path, $"No touchpoints found past this page.\nonly {touchpoints.Length} touchpoints recorded. {Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00)} pages recorded")); }  
+            if(PageMessage(page, start, end, touchpoints) == "Status 600") 
+            { return NotFound(new Error(404, Request.Path, $"An error acured.\nThere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); }
+            if(PageMessage(page, start, end, touchpoints) == "Status 601") 
+            { 
+                new Error(302, Request.Path, $"No touchpoints found past this page.\nonly {touchpoints.Length} touchpoints recorded.\n {Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00)} pages recorded");
+                return Redirect($"{Convert.ToInt32(Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00))}"); // moves user to last page if page is out of range
+            }  
             return Ok(PageMessage(page, start, end, touchpoints));
         }
         
