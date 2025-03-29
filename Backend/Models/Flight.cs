@@ -19,7 +19,7 @@ namespace ProjectD
         public DateTime ScheduledUTC { get; set; }
         public DateTime ActualUTC { get; set; }
         public DateTime ScheduledLocal { get; set; }
-        public DateTime actuallocal { get; set; }
+        public DateTime ActualLocal { get; set; }
         public string Bewegingen { get; set; }
         public string Parkeerpositie { get; set; }
         public bool Bus { get; set; }

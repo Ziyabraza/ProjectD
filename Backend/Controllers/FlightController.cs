@@ -16,21 +16,41 @@ namespace ProjectD
             _context = context;
         }
 
-        // Zoek vlucht op basis van een FlightNumber als string
-        [HttpGet("{flightNumber}")]
-        public async Task<ActionResult<Flight>> GetFlightByFlightNumber(string flightNumber)
+        // Zoek vlucht op basis van een FlightId als string
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Flight>> GetFlightById(int id)
         {
-            Console.WriteLine("[DEBUG] FlightNumber ontvangen: " + flightNumber);  // Log de input
+            Console.WriteLine("[DEBUG] Flight ID received: " + id);
 
-            var flight = await _context.Flights.FirstOrDefaultAsync(f => f.FlightNumber == flightNumber);
+            var flight = await _context.Flights.FirstOrDefaultAsync(f => f.Id == id);
             if (flight == null)
             {
-                Console.WriteLine("[DEBUG] Flight niet gevonden.");
-                return NotFound(new { message = "Flight not found" });
+                Console.WriteLine("[DEBUG] Flight not found.");
+                return NotFound(new { message = $"Flight with ID {id} not found." });
             }
 
-            Console.WriteLine("[DEBUG] Flight gevonden: " + flight.FlightNumber);
+            Console.WriteLine("[DEBUG] Flight found: " + flight.Id);
             return Ok(flight);
+        }
+
+        [HttpGet("Flights with IDs and URL")]
+        public async Task<ActionResult<Dictionary<int, string>>> GetFlightsWithID()
+        {
+            var URL = $"{Request.Scheme}://{Request.Host}/api/flight";
+            var flightsLinks = await _context.Flights
+            .Select(f => new 
+            {
+                f.Id
+            })
+            .ToDictionaryAsync(
+                f => f.Id,
+                f => $"{URL}/{f.Id}"
+            );
+            if(!flightsLinks.Any())
+            {
+                return NotFound("No flights found");
+            }
+            return Ok(flightsLinks);
         }
     }
 }

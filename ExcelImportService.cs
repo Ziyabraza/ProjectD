@@ -43,7 +43,7 @@ public class ExcelImportService
                 ScheduledUTC = ParseDate(row[11]),
                 ActualUTC = ParseDate(row[12]),
                 ScheduledLocal = ParseDate(row[13]),
-                actuallocal = ParseDate(row[14]),
+                ActualLocal = ParseDate(row[14]),
                 Bewegingen = row[15]?.ToString(),
                 Parkeerpositie = row[16]?.ToString(),
                 // Skip row[17] → Parkeercontract
