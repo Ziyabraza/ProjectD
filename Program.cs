@@ -35,7 +35,9 @@ var columnOptions = new Dictionary<string, ColumnWriterBase>
 
 Serilog.Log.Logger = new LoggerConfiguration()
     .WriteTo.Console() // Log to console
-    .WriteTo.PostgreSQL(connectionString, "public.logs", columnOptions, needAutoCreateTable: true) // Log to PostgreSQL
+    // Note: WriteTo.PostgreSQL is not working at the moment, if someone knows a fix it would be apreaciated.
+    // Made workaround in Error.cs that logs errors in a JSON file.
+    .WriteTo.PostgreSQL(connectionString, "public.logs", columnOptions, needAutoCreateTable: true) // Log to PostgreSQL, 
     .CreateLogger();
 
 Serilog.Log.Information("Test log message 2");
@@ -86,7 +88,7 @@ app.Use(async (context, next) =>
         // If the status code is 4xx or 5xx (indicating errors), log that too
         if (context.Response.StatusCode >= 400)
         {
-            Console.WriteLine("an error occurred");
+            // Console.WriteLine("an error occurred");
             Log.Error($"Request to {context.Request.Path} returned status {context.Response.StatusCode}");
         }
     }

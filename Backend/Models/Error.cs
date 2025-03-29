@@ -24,15 +24,17 @@ public class Error
     }
     public string Message { get; set; }
     public string Url { get; set; } 
+    public DateTime Date { get; set; }
     public Error(int statusCode, string url, string message = null)
     {
         StatusCode = statusCode;
         Message = message == null ? "An error occurred." : message;
         Url = url;
-        LogError();
+        Date = DateTime.Now;
+        LogError(Date);
     }
 
-    private void LogError()
+    private void LogError(DateTime date)
     {
         // Serialize the error object to JSON with indentation
         string errorJson = JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
@@ -44,7 +46,7 @@ public class Error
         Serilog.Log.Error(this.ToString());
 
         // Get today's date to name the log file
-        DateTime date = DateTime.Now; 
+        // DateTime date = DateTime.Now; 
         DateOnly dateOnly = new DateOnly(date.Year, date.Month, date.Day);
         string path = @$"Backend\Data\ErrorLogs\{dateOnly}.json";
 
@@ -67,6 +69,6 @@ public class Error
         }
     }
 
-    // ToString() is mainly used for logging
-    public override string ToString() => $"Error {StatusCode}: {Message} ({Details}) at {Url}";
+    // ToString() is mainly used for METADETA display for DEBUG
+    public override string ToString() => $"Error {StatusCode}\nMessage: {Message}\nDetails: {Details}\nURL: {Url}\nDateTime(EU): {Date:dd/MM/yyyy HH:mm:ss}";
 }
