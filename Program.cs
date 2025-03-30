@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Npgsql;
+using NpgsqlTypes;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -8,6 +9,7 @@ using ProjectD;
 using Serilog;
 using Serilog.Sinks.PostgreSQL;
 using Serilog.Sinks.PostgreSQL.ColumnWriters;
+using System.Collections.Generic;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -27,21 +29,23 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 var columnOptions = new Dictionary<string, ColumnWriterBase>
 {
-    { "timestamp", new TimestampColumnWriter() },
-    { "log_level", new LevelColumnWriter() },
-    { "message", new RenderedMessageColumnWriter() },
-    { "source", new SinglePropertyColumnWriter("REST_API") }
+    { "status_code", new SinglePropertyColumnWriter("status_code", PropertyWriteMethod.Raw, NpgsqlDbType.Integer) }, // Integer
+    { "details", new SinglePropertyColumnWriter("details", PropertyWriteMethod.Raw, NpgsqlDbType.Text) }, // String
+    { "message", new SinglePropertyColumnWriter("message", PropertyWriteMethod.Raw, NpgsqlDbType.Text) }, // String
+    { "url", new SinglePropertyColumnWriter("url", PropertyWriteMethod.Raw, NpgsqlDbType.Text) }, // String
+    { "date", new TimestampColumnWriter() } // Timestamp
 };
 
 Serilog.Log.Logger = new LoggerConfiguration()
     .WriteTo.Console() // Log to console
-    // Note: WriteTo.PostgreSQL is not working at the moment, if someone knows a fix it would be apreaciated.
+    // Note1: WriteTo.PostgreSQL is not working at the moment, if someone knows a fix it would be apreaciated.
     // Made workaround in Error.cs that logs errors in a JSON file.
-    .WriteTo.PostgreSQL(connectionString, "public.logs", columnOptions, needAutoCreateTable: true) // Log to PostgreSQL, 
+    // Note2 30/02/2025: It partialy works not, but it logs unecessary data that are mostly null in the fields and dont found a workaround for that yet.
+    .WriteTo.PostgreSQL(connectionString, "logs", columnOptions) // Log to PostgreSQL, 
     .CreateLogger();
 
-Serilog.Log.Information("Test log message 2");
 
+// this checks if the connection to the database is working
 using (var conn = new NpgsqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")))
 {
     try
@@ -74,30 +78,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 app.MapControllers();
-
-app.Use(async (context, next) =>
-{
-    try
-    {
-        // Proceed with the request
-        await next();
-
-        // Log the status after the request has been processed
-        Log.Information($"Request: {context.Request.Path}, Status: {context.Response.StatusCode}");
-
-        // If the status code is 4xx or 5xx (indicating errors), log that too
-        if (context.Response.StatusCode >= 400)
-        {
-            // Console.WriteLine("an error occurred");
-            Log.Error($"Request to {context.Request.Path} returned status {context.Response.StatusCode}");
-        }
-    }
-    catch (Exception ex)
-    {
-        // Catch any unhandled exceptions and log as error
-        Log.Error(ex, "An unhandled error occurred while processing the request.");
-        throw; // Rethrow the exception after logging
-    }
-});
 
 app.Run(); 

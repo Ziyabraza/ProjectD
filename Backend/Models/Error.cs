@@ -4,6 +4,8 @@ using Serilog.Sinks.PostgreSQL;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.Options;
+using Serilog.Sinks.PostgreSQL.ColumnWriters;
+using NpgsqlTypes;
 
 public class Error
 {
@@ -33,6 +35,23 @@ public class Error
         Url = url;
         Date = DateTime.Now;
         LogError(Date);
+        LogSerilog();
+    }
+    private void LogSerilog()
+    {
+        if (!string.IsNullOrEmpty(Message) && !string.IsNullOrEmpty(Url))
+        {
+            Serilog.Log.ForContext("status_code", StatusCode)
+                .ForContext("details", Details)
+                .ForContext("message", Message)
+                .ForContext("url", Url)
+                .Error("An error occurred.");
+        }
+        else
+        {
+            // Optionally log an internal message to inform why it's not logged
+            Serilog.Log.Warning("Error log skipped: One or more required fields are missing (Message, Url, or StatusCode).");
+        }
     }
 
     private void LogError(DateTime date)
@@ -43,10 +62,6 @@ public class Error
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         });
 
-        // Log the error as a string for Serilog
-        Serilog.Log.Error(this.ToString());
-
-        // Get today's date to name the log file
         // DateTime date = DateTime.Now; 
         DateOnly dateOnly = new DateOnly(date.Year, date.Month, date.Day);
         string path = @$"Backend\Data\ErrorLogs\{dateOnly}.json";

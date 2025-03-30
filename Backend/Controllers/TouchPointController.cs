@@ -45,8 +45,9 @@ namespace ProjectD.Controllers
             { return NotFound(new Error(404, Request.Path, $"An error acured.\nThere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); }
             if(PageMessage(page, start, end, touchpoints) == "Status 601") 
             { 
-                new Error(302, Request.Path, $"No touchpoints found past this page.\nonly {touchpoints.Length} touchpoints recorded.\n {Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00)} pages recorded");
-                return Redirect($"{Convert.ToInt32(Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00))}"); // moves user to last page if page is out of range
+                int obj = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00));
+                new Error(302, Request.Path, $"No touchpoints found past this page.\nonly {obj} touchpoints recorded.\n {Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00)} pages recorded");
+                return Redirect(obj.ToString()); // moves user to last page if page is out of range
             }  
             return Ok(PageMessage(page, start, end, touchpoints));
         }
