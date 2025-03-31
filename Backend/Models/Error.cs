@@ -45,7 +45,7 @@ public class Error
                 .ForContext("details", Details)
                 .ForContext("message", Message)
                 .ForContext("url", Url)
-                .Error("An error occurred.");
+                .Error($"An error occurred:\n{this.ToString()}");
         }
         else
         {
@@ -86,5 +86,5 @@ public class Error
     }
 
     // ToString() is mainly used for METADETA display for DEBUG
-    public override string ToString() => $"Error {StatusCode}\nMessage: {Message}\nDetails: {Details}\nURL: {Url}\nDateTime(EU): {Date:dd/MM/yyyy HH:mm:ss}";
+    public override string ToString() => $"\tStatusCode: {StatusCode}\n\tDetails: {Details}\n\tMessage: {Message}\n\tURL: {Url}\nDateTime(EU): {Date:dd/MM/yyyy HH:mm:ss}";
 }

@@ -40,7 +40,8 @@ Serilog.Log.Logger = new LoggerConfiguration()
     .WriteTo.Console() // Log to console
     // Note1: WriteTo.PostgreSQL is not working at the moment, if someone knows a fix it would be apreaciated.
     // Made workaround in Error.cs that logs errors in a JSON file.
-    // Note2 30/03/2025: It partialy works not, but it logs unecessary data that are mostly null in the fields and dont found a workaround for that yet.
+    // Note2: 30/03/2025: it partialy works not, but it logs unecessary data that are mostly null in the fields and dont found a workaround for that yet.
+    // Note3: 31/03/2025: Should now properly log in PostpreSQL make sure to create table manualy!
     .WriteTo.PostgreSQL(connectionString, "logs", columnOptions, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error) // Log to PostgreSQL, 
     .CreateLogger();
 

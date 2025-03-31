@@ -45,9 +45,9 @@ namespace ProjectD.Controllers
             { return NotFound(new Error(404, Request.Path, $"An error acured.\nThere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); }
             if(PageMessage(page, start, end, touchpoints) == "Status 601") 
             { 
-                int obj = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00));
-                new Error(302, Request.Path, $"No touchpoints found past this page.\nonly {obj} touchpoints recorded.\n {Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00)} pages recorded");
-                return Redirect(obj.ToString()); // moves user to last page if page is out of range
+                int redirectObj = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00));
+                new Error(302, Request.Path, $"No touchpoints found past this page.\nonly {touchpoints.Length} touchpoints recorded.\n{redirectObj} pages recorded");
+                return Redirect(redirectObj.ToString()); // moves user to last page if page is out of range
             }  
             return Ok(PageMessage(page, start, end, touchpoints));
         }
@@ -68,7 +68,7 @@ namespace ProjectD.Controllers
                     results.Add(touchpoint);
                 }
             }
-            if(touchpoints.Length == 0) { return NotFound(new Error(404, Request.Path, "An error acured.\n there are no Touchpoints found make contact with Webprovider if its ongoing issue.\n Sorry for inconvinence.")); }
+            if(touchpoints.Length == 0) { return NotFound(new Error(404, Request.Path, "An error acured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); }
             if(results.Count == 0) { return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}.")); }
             return Ok(results);
         }
