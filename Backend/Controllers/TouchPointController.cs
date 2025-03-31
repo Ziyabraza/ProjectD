@@ -19,8 +19,10 @@ namespace ProjectD.Controllers
         private string PageMessage(int page, int start, int end, Touchpoint[] touchpoints)
         {
             string message = $"Touchpoint page{page} ({start+1} - {end+1}):\n\n";
+
             if(touchpoints.Length == 0) { return "Status 600"; } // this will throw status NotFound
             if(touchpoints.Length < start) { return "Status 601"; } // this will throw status NotFound
+
             for(int i = start; i < end; i++)
             {
                 if(touchpoints.Length>i) { message += $"{i + 1} {touchpoints[i].FlightId} || {touchpoints[i].TouchpointType} || {touchpoints[i].TouchpointTime} || {touchpoints[i].TouchpointPax} \n"; }
@@ -29,6 +31,7 @@ namespace ProjectD.Controllers
         }
 
         private string ToString(Touchpoint touchpoint) => $"{touchpoint.FlightId} || {touchpoint.TouchpointType} || {touchpoint.TouchpointTime} || {touchpoint.TouchpointPax}";
+
 
         [HttpGet("page/{page}")]
         public async Task<IActionResult> GetPage1(int page)
@@ -59,11 +62,13 @@ namespace ProjectD.Controllers
             bool found = false;
             // string message = "Match(es) found:\n\n";
             List<Touchpoint> results = new();
+
             var touchpoints = await _context.Touchpoints.ToArrayAsync();
             foreach(var touchpoint in touchpoints)
             {
                 if(touchpoint.FlightId == id)
                 {
+
                     // found = true;
                     results.Add(touchpoint);
                 }
@@ -71,6 +76,7 @@ namespace ProjectD.Controllers
             if(touchpoints.Length == 0) { return NotFound(new Error(404, Request.Path, "An error acured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); }
             if(results.Count == 0) { return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}.")); }
             return Ok(results);
+
         }
     }
 }

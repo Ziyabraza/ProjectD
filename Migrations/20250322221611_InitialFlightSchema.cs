@@ -13,7 +13,7 @@ namespace ProjectD.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "vluchten",
+                name: "Flights",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
