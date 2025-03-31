@@ -86,5 +86,5 @@ public class Error
     }
 
     // ToString() is mainly used for METADETA display for DEBUG
-    public override string ToString() => $"\tStatusCode: {StatusCode}\n\tDetails: {Details}\n\tMessage: {Message}\n\tURL: {Url}\nDateTime(EU): {Date:dd/MM/yyyy HH:mm:ss}";
+    public override string ToString() => $"\tStatusCode: {StatusCode}\n\tDetails: {Details}\n\tMessage: {Message}\n\tURL: {Url}\n\tDateTime(EU): {Date:dd/MM/yyyy HH:mm:ss}";
 }
