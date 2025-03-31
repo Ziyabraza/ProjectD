@@ -1,0 +1,161 @@
+[
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded. 286 pages recorded",
+  "url": "/api/Touchpoint/page/700012",
+  "date": "2025-03-29T09:50:28.9231414+01:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded. 286 pages recorded",
+  "url": "/api/Touchpoint/page/700001",
+  "date": "2025-03-29T09:56:15.5799353+01:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded. 286 pages recorded",
+  "url": "/api/Touchpoint/page/9000045",
+  "date": "2025-03-29T10:01:45.5096464+01:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded. 286 pages recorded",
+  "url": "/api/Touchpoint/page/100000",
+  "date": "2025-03-29T10:06:24.9486015+01:00"
+}
+,
+{
+  "statusCode": 400,
+  "details": "Bad Request - The server could not understand the request.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/0",
+  "date": "2025-03-29T10:30:44.6989303+01:00"
+}
+,
+{
+  "statusCode": 400,
+  "details": "Bad Request - The server could not understand the request.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/-1",
+  "date": "2025-03-29T10:30:49.0075909+01:00"
+}
+,
+{
+  "statusCode": 400,
+  "details": "Bad Request - The server could not understand the request.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/-1",
+  "date": "2025-03-29T10:30:50.0658428+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Unknown Error - No details available.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded. 286 pages recorded",
+  "url": "/api/Touchpoint/page/10000000",
+  "date": "2025-03-29T10:45:50.3222393+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Unknown Error - No details available.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded. 286 pages recorded",
+  "url": "/api/Touchpoint/page/10000000",
+  "date": "2025-03-29T10:47:04.0959466+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Unknown Error - No details available.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded. 286 pages recorded",
+  "url": "/api/Touchpoint/page/10000000",
+  "date": "2025-03-29T10:47:45.6127111+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/0",
+  "date": "2025-03-29T10:55:31.0504107+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/0",
+  "date": "2025-03-29T12:23:17.9421772+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/0",
+  "date": "2025-03-29T13:40:10.4764512+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/-1",
+  "date": "2025-03-29T14:31:17.1898892+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/0",
+  "date": "2025-03-29T14:58:48.975709+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/0",
+  "date": "2025-03-29T15:03:18.0776585+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/0",
+  "date": "2025-03-29T15:16:36.6794165+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/0",
+  "date": "2025-03-29T15:18:13.8643855+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/0",
+  "date": "2025-03-29T15:18:23.4479695+01:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "No touchpoints found past this page.\nonly 286 touchpoints recorded.\n 286 pages recorded",
+  "url": "/api/Touchpoint/page/10000000",
+  "date": "2025-03-29T15:18:41.4135349+01:00"
+}
+]

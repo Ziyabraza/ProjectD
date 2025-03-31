@@ -1,0 +1,33 @@
+// Dont change par1 and par2
+// Par3 has "An error occurred." as default, filling this field is recomended.
+// example ussage:
+new Error(200, Request.Path, "OK"); // this is ussage example it does not have to be used for status 200, otherwise it will bloat the logs.
+
+
+302: Redirect()
+{
+    string obj = "1" // if you have an field in your namespace that you can use than use that instead
+    new Error(302, Request.Path, "User has been redirected to ({obj})");
+    // Redirect parameter must be string, use .ToString() to covert.
+    Redirect(obj.ToString()); // api/controller/-2 => api/controller/1 
+}
+
+
+404: NotFound()
+{
+    // this will display Error object to user and log at same time. 
+    // implementation can change depending on request of PO.
+    return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}."));
+}
+
+
+400: BadRequest()
+{
+    return BadRequest(new Error(404, Request.Path, "An error acured check par type of [obj]"));
+}
+
+
+
+
+
+
