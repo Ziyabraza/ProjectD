@@ -26,7 +26,7 @@ namespace ProjectD
             if (flight == null)
             {
                 Console.WriteLine("[DEBUG] Flight not found.");
-                return NotFound(new { message = $"Flight with ID {id} not found." });
+                return NotFound(new Error(404, Request.Path, $"Flight with ID {id} not found." ));
             }
 
             Console.WriteLine("[DEBUG] Flight found: " + flight.Id);
@@ -48,7 +48,7 @@ namespace ProjectD
             );
             if(!flightsLinks.Any())
             {
-                return NotFound("No flights found");
+                return NotFound(new Error(404, Request.Path, "No flights found"));
             }
             return Ok(flightsLinks);
         }
