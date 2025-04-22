@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectD
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FlightController : ControllerBase
     {
         private readonly FlightDBContext _context;
@@ -17,6 +19,7 @@ namespace ProjectD
         }
 
         // Zoek vlucht op basis van een FlightId als string
+        [Authorize(Roles = "User, Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Flight>> GetFlightById(int id)
         {
@@ -32,7 +35,7 @@ namespace ProjectD
             Console.WriteLine("[DEBUG] Flight found: " + flight.Id);
             return Ok(flight);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("Flights with IDs and URL")]
         public async Task<ActionResult<Dictionary<int, string>>> GetFlightsWithID()
         {
