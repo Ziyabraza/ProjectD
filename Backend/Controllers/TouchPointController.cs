@@ -73,8 +73,14 @@ namespace ProjectD.Controllers
                     results.Add(touchpoint);
                 }
             }
-            if(touchpoints.Length == 0) { return NotFound(new Error(404, Request.Path, "An error acured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); }
-            if(results.Count == 0) { return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}.")); }
+            if(touchpoints == null || touchpoints.Length == 0) 
+            { 
+                return NotFound(new Error(404, Request.Path, "An error acured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); 
+            }
+            if(results == null || results.Count == 0) 
+            { 
+                return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}.")); 
+            }
             return Ok(results);
 
         }
