@@ -52,7 +52,11 @@ namespace ProjectD
 
             if (!flights.Any())
             {
+<<<<<<< Updated upstream
                 return NotFound(new { status = 404, path = Request.Path, message = "No flights found for the given filters." });
+=======
+                return NotFound(new Error(404, Request.Path, "No flights found for the given filters."));
+>>>>>>> Stashed changes
             }
 
             return Ok(flights);
