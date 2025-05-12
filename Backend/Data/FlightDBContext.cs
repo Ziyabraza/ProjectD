@@ -17,7 +17,7 @@ namespace ProjectD
 
             modelBuilder.Entity<Flight>()
                 .Property(f => f.Id)
-                .HasColumnName("id");  // Zorg dat de kolomnaam overeenkomt met de kolom in PostgreSQL
+                .HasColumnName("Id");  // Zorg dat de kolomnaam overeenkomt met de kolom in PostgreSQL
 
             // Configuratie van de relatie tussen Flight en Touchpoint
             modelBuilder.Entity<Touchpoint>()

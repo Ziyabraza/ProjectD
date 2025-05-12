@@ -34,8 +34,15 @@ namespace ProjectD
         }
 
         [HttpGet("filter")]
-        public async Task<IActionResult> FilterFlights([FromQuery] DateTime? date, [FromQuery] string? country)
+        public async Task<IActionResult> FilterFlights(
+            [FromQuery] DateTime? date, 
+            [FromQuery] string? country, 
+            [FromQuery] int page = 1)
         {
+            const int pageSize = 100;
+
+            if (page < 1) page = 1;
+
             var query = _context.Flights.AsQueryable();
 
             if (date.HasValue)
@@ -48,18 +55,29 @@ namespace ProjectD
                 query = query.Where(f => f.Country.ToLower() == country.ToLower());
             }
 
-            var flights = await query.ToListAsync();
+            var totalItems = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var flights = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             if (!flights.Any())
             {
-<<<<<<< Updated upstream
                 return NotFound(new { status = 404, path = Request.Path, message = "No flights found for the given filters." });
-=======
-                return NotFound(new Error(404, Request.Path, "No flights found for the given filters."));
->>>>>>> Stashed changes
             }
 
-            return Ok(flights);
+            return Ok(new
+            {
+                page,
+                pageSize,
+                totalPages,
+                totalItems,
+                data = flights
+            });
         }
+
+
     }
 }
