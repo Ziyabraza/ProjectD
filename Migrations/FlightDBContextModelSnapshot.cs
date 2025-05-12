@@ -46,7 +46,7 @@ namespace ProjectD.Migrations
                     b.HasKey("Id");
 
                     // Hier pas ik de tabelnaam aan
-                    b.ToTable("vluchten");  // Verwijst nu naar 'vluchten' in PostgreSQL
+                    b.ToTable("Flights");  // Verwijst nu naar 'vluchten' in PostgreSQL
                 });
 
             modelBuilder.Entity("ProjectD.Touchpoint", b =>

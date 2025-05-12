@@ -12,7 +12,7 @@ namespace ProjectD
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Hier wordt expliciet aangegeven dat de tabel in PostgreSQL 'vluchten' heet
-            modelBuilder.Entity<Flight>().ToTable("vluchten")
+            modelBuilder.Entity<Flight>().ToTable("Flights")
                 .HasKey(f => f.Id);  // Definieer de primaire sleutel expliciet
 
             modelBuilder.Entity<Flight>()

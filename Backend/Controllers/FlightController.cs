@@ -32,5 +32,30 @@ namespace ProjectD
             Console.WriteLine("[DEBUG] Flight gevonden: " + flight.FlightNumber);
             return Ok(flight);
         }
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterFlights([FromQuery] DateTime? date, [FromQuery] string? country)
+        {
+            var query = _context.Flights.AsQueryable();
+
+            if (date.HasValue)
+            {
+                query = query.Where(f => f.ScheduledLocal.Date == date.Value.Date);
+            }
+
+            if (!string.IsNullOrEmpty(country))
+            {
+                query = query.Where(f => f.Country.ToLower() == country.ToLower());
+            }
+
+            var flights = await query.ToListAsync();
+
+            if (!flights.Any())
+            {
+                return NotFound(new { status = 404, path = Request.Path, message = "No flights found for the given filters." });
+            }
+
+            return Ok(flights);
+        }
     }
 }
