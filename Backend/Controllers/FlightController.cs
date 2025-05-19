@@ -5,7 +5,7 @@ using System;
 
 namespace ProjectD
 {
-    [Route("api/[controller]")]
+    [Route("")]
     [ApiController]
     public class FlightController : ControllerBase
     {
@@ -17,7 +17,7 @@ namespace ProjectD
         }
 
         // Zoek vlucht op basis van een FlightId als string
-        [HttpGet("{id}")]
+        [HttpGet("id")]
         public async Task<ActionResult<Flight>> GetFlightById(int id)
         {
             Console.WriteLine("[DEBUG] Flight ID received: " + id);
@@ -33,7 +33,7 @@ namespace ProjectD
             return Ok(flight);
         }
 
-        [HttpGet("Flights with IDs and URL")]
+        [HttpGet("Flights")]
         public async Task<ActionResult<Dictionary<int, string>>> GetFlightsWithID()
         {
             var URL = $"{Request.Scheme}://{Request.Host}/api/flight";
