@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ namespace ProjectD.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TouchpointController : ControllerBase
     {
         private readonly FlightDBContext _context; // Your DbContext
@@ -37,7 +39,7 @@ namespace ProjectD.Controllers
 
         private string ToString(Touchpoint touchpoint) => $"{touchpoint.FlightId} || {touchpoint.TouchpointType} || {touchpoint.TouchpointTime} || {touchpoint.TouchpointPax}";
 
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("page/{page}")]
         public async Task<IActionResult> GetPage1(int page)
         {
@@ -67,7 +69,7 @@ namespace ProjectD.Controllers
             touchpoints = TempTouchpoints.ToArray();
             return Ok(touchpoints);
         }
-        
+        [Authorize(Roles = "User, Admin")]
         [HttpGet("SearchByFlightID/{id}")]
         public async Task<IActionResult> GetByID(int id)
         {
