@@ -16,18 +16,23 @@ namespace ProjectD.Controllers
             _context = context;
         }
 
-        private string PageMessage(int page, int start, int end, Touchpoint[] touchpoints)
+        private Touchpoint[] PageMessage(int page, int start, int end, Touchpoint[] touchpoints)
         {
             string message = $"Touchpoint page{page} ({start+1} - {end+1}):\n\n";
 
-            if(touchpoints.Length == 0) { return "Status 600"; } // this will throw status NotFound
-            if(touchpoints.Length < start) { return "Status 601"; } // this will throw status NotFound
+            if(touchpoints.Length == 0) { return null; } // this will throw status NotFound
+            Touchpoint[] newTouchpoints = new Touchpoint[1000]; // default == null
+            if(touchpoints.Length < start) { return newTouchpoints; } // this will throw status NotFound
 
             for(int i = start; i < end; i++)
             {
-                if(touchpoints.Length>i) { message += $"{i + 1} {touchpoints[i].FlightId} || {touchpoints[i].TouchpointType} || {touchpoints[i].TouchpointTime} || {touchpoints[i].TouchpointPax} \n"; }
+                if(touchpoints.Length>i) 
+                { 
+                    newTouchpoints[i%1000] = touchpoints[i];
+                    // message += $"{i + 1} {touchpoints[i].FlightId} || {touchpoints[i].TouchpointType} || {touchpoints[i].TouchpointTime} || {touchpoints[i].TouchpointPax} \n"; 
+                }
             }
-            return message;
+            return newTouchpoints;
         }
 
         private string ToString(Touchpoint touchpoint) => $"{touchpoint.FlightId} || {touchpoint.TouchpointType} || {touchpoint.TouchpointTime} || {touchpoint.TouchpointPax}";
@@ -41,18 +46,26 @@ namespace ProjectD.Controllers
                 new Error(302, Request.Path, "Page number must be greater than 0.");
                 return Redirect("1"); // moves user to page 1 if page is less than 1
             }
-            int start = page > 1 ? 1000*(page-1) - 1 : 0;
-            int end = (1000*page) - 1;
+            int start = page > 1 ? 1000*(page-1) : 0;
+            int end = 1000*page;
             var touchpoints = await _context.Touchpoints.ToArrayAsync();
-            if(PageMessage(page, start, end, touchpoints) == "Status 600") 
+            if(PageMessage(page, start, end, touchpoints) == null) 
             { return NotFound(new Error(404, Request.Path, $"An error acured.\nThere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); }
-            if(PageMessage(page, start, end, touchpoints) == "Status 601") 
+            if(PageMessage(page, start, end, touchpoints)?.Any(tp => tp != null) == false) // checks if there is any touchpoint availble past this page to display.
             { 
-                int redirectObj = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00));
-                new Error(302, Request.Path, $"No touchpoints found past this page.\nonly {touchpoints.Length} touchpoints recorded.\n{redirectObj} pages recorded");
+                int redirectObj = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00)); // calculates what is the last page for redirect
+                new Error(302, Request.Path, $"No touchpoints found past this page. only {touchpoints.Length} touchpoints recorded. {redirectObj} pages recorded");
                 return Redirect(redirectObj.ToString()); // moves user to last page if page is out of range
-            }  
-            return Ok(PageMessage(page, start, end, touchpoints));
+            }
+            // if no null's detected on page execute it imidiatly to save on performance
+            // if null('s) detected take extra masures to NOT show this to the user: 
+            List<Touchpoint> TempTouchpoints = new();
+            foreach(Touchpoint touchpoint in PageMessage(page, start, end, touchpoints))
+            {
+                if(touchpoint != null) { TempTouchpoints.Add(touchpoint); }
+            }
+            touchpoints = TempTouchpoints.ToArray();
+            return Ok(touchpoints);
         }
         
         [HttpGet("SearchByFlightID/{id}")]
@@ -73,8 +86,14 @@ namespace ProjectD.Controllers
                     results.Add(touchpoint);
                 }
             }
-            if(touchpoints.Length == 0) { return NotFound(new Error(404, Request.Path, "An error acured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); }
-            if(results.Count == 0) { return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}.")); }
+            if(touchpoints == null || touchpoints.Length == 0) 
+            { 
+                return NotFound(new Error(404, Request.Path, "An error acured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); 
+            }
+            if(results == null || results.Count == 0) 
+            { 
+                return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}.")); 
+            }
             return Ok(results);
 
         }

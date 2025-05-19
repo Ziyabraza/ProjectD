@@ -1,0 +1,97 @@
+[
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "Flight with ID 58785 not found.",
+  "url": "/api/Flight/58785",
+  "date": "2025-05-14T12:32:45.9459616+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "Flight with ID 587856 not found.",
+  "url": "/api/Flight/587856",
+  "date": "2025-05-14T12:32:54.2435037+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "Flight with ID 587856 not found.",
+  "url": "/api/Flight/587856",
+  "date": "2025-05-14T12:32:55.4139624+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "Flight with ID 588750 not found.",
+  "url": "/api/Flight/588750",
+  "date": "2025-05-14T12:33:06.2131179+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "Flight with ID 578875 not found.",
+  "url": "/api/Flight/578875",
+  "date": "2025-05-14T12:33:13.1436459+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "Flight with ID 587875 not found.",
+  "url": "/api/Flight/587875",
+  "date": "2025-05-14T12:33:20.0413969+02:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded.\n286 pages recorded",
+  "url": "/api/Touchpoint/page/1000",
+  "date": "2025-05-14T13:34:02.4796211+02:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded.\n286 pages recorded",
+  "url": "/api/Touchpoint/page/1000",
+  "date": "2025-05-14T13:35:48.0570256+02:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded.\n286 pages recorded",
+  "url": "/api/Touchpoint/page/1000",
+  "date": "2025-05-14T13:38:48.9224481+02:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/0",
+  "date": "2025-05-14T13:41:40.485729+02:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "No touchpoints found past this page.\nonly 285733 touchpoints recorded.\n286 pages recorded",
+  "url": "/api/Touchpoint/page/400",
+  "date": "2025-05-14T13:58:37.3770339+02:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "No touchpoints found past this page. only 285733 touchpoints recorded. 286 pages recorded",
+  "url": "/api/Touchpoint/page/400",
+  "date": "2025-05-14T14:01:30.9058385+02:00"
+}
+]
