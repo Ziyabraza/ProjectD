@@ -76,9 +76,30 @@ namespace ProjectD
 
             var result = await controller.GetPage1(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var message = Assert.IsType<string>(okResult.Value);
+            var message = Assert.IsType<Touchpoint[]>(okResult.Value);
 
-            Assert.Contains("Touchpoint page1", message);
+            Assert.False(message == null); // checks if message is null
+            Assert.False(message?.Any(x => x == null)); // Checks if it does NOT contain any null's
+        }
+
+        [Fact]
+        public async Task GetPage1_Returns_Redirect()
+        {
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Path = "/api/page/2/"; // Set desired path
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await controller.GetPage1(2);
+            var okResult = Assert.IsType<RedirectResult>(result);
+
+            Assert.True(okResult.Url == "1"); // Redirect URL result
         }
 
         [Fact]
