@@ -23,14 +23,14 @@ namespace ProjectD.Controllers
             string message = $"Touchpoint page{page} ({start+1} - {end+1}):\n\n";
 
             if(touchpoints.Length == 0) { return null; } // this will throw status NotFound
-            Touchpoint[] newTouchpoints = new Touchpoint[1000]; // default == null
+            Touchpoint[] newTouchpoints = new Touchpoint[100]; // default == null
             if(touchpoints.Length < start) { return newTouchpoints; } // this will throw status NotFound
 
             for(int i = start; i < end; i++)
             {
                 if(touchpoints.Length>i) 
                 { 
-                    newTouchpoints[i%1000] = touchpoints[i];
+                    newTouchpoints[i%100] = touchpoints[i];
                     // message += $"{i + 1} {touchpoints[i].FlightId} || {touchpoints[i].TouchpointType} || {touchpoints[i].TouchpointTime} || {touchpoints[i].TouchpointPax} \n"; 
                 }
             }
@@ -48,14 +48,14 @@ namespace ProjectD.Controllers
                 new Error(302, Request.Path, "Page number must be greater than 0.");
                 return Redirect("1"); // moves user to page 1 if page is less than 1
             }
-            int start = page > 1 ? 1000*(page-1) : 0;
-            int end = 1000*page;
+            int start = page > 1 ? 100*(page-1) : 0;
+            int end = 100*page;
             var touchpoints = await _context.Touchpoints.ToArrayAsync();
             if(PageMessage(page, start, end, touchpoints) == null) 
             { return NotFound(new Error(404, Request.Path, $"An error acured.\nThere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); }
             if(PageMessage(page, start, end, touchpoints)?.Any(tp => tp != null) == false) // checks if there is any touchpoint availble past this page to display.
             { 
-                int redirectObj = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(touchpoints.Length)/1000.00)); // calculates what is the last page for redirect
+                int redirectObj = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(touchpoints.Length)/100.00)); // calculates what is the last page for redirect
                 new Error(302, Request.Path, $"No touchpoints found past this page. only {touchpoints.Length} touchpoints recorded. {redirectObj} pages recorded");
                 return Redirect(redirectObj.ToString()); // moves user to last page if page is out of range
             }
@@ -66,8 +66,16 @@ namespace ProjectD.Controllers
             {
                 if(touchpoint != null) { TempTouchpoints.Add(touchpoint); }
             }
-            touchpoints = TempTouchpoints.ToArray();
-            return Ok(touchpoints);
+
+            return Ok
+            (
+                new PageManager
+                (
+                    page,
+                    Convert.ToInt32(Math.Ceiling(Convert.ToDouble(touchpoints.Length) / 100.00)),
+                    TempTouchpoints.ToArray()
+                )
+            );
         }
         [Authorize(Roles = "User, Admin")]
         [HttpGet("SearchByFlightID/{id}")]
