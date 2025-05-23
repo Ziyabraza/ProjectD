@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectD.Models; // Ensure you have the correct namespace for your models
 
-namespace ProjectD.Controllers
+namespace ProjectD
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -105,7 +105,6 @@ namespace ProjectD.Controllers
                 return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}.")); 
             }
             return Ok(results);
-
         }
     }
 }
