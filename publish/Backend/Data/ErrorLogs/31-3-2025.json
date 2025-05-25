@@ -1,0 +1,33 @@
+[
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "No touchpoints found for Flight ID 900000.",
+  "url": "/api/Touchpoint/SearchByFlightID/900000",
+  "date": "2025-03-31T10:50:43.5414258+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "No touchpoints found for Flight ID 900001.",
+  "url": "/api/Touchpoint/SearchByFlightID/900001",
+  "date": "2025-03-31T10:51:41.9334787+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "No touchpoints found for Flight ID -1.",
+  "url": "/api/Touchpoint/SearchByFlightID/-1",
+  "date": "2025-03-31T10:58:55.3466922+02:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "Page number must be greater than 0.",
+  "url": "/api/Touchpoint/page/-1",
+  "date": "2025-03-31T10:59:00.5875953+02:00"
+}
+]
