@@ -1,0 +1,73 @@
+[
+{
+  "statusCode": 500,
+  "details": "Internal Server Error - Something went wrong on the server.",
+  "message": "Test error logging",
+  "url": "https://test.com/test",
+  "date": "2025-05-26T14:04:09.2895041+02:00"
+}
+,
+{
+  "statusCode": 500,
+  "details": "Internal Server Error - Something went wrong on the server.",
+  "message": "Test error logging",
+  "url": "https://test.com/test",
+  "date": "2025-05-26T14:04:09.2904879+02:00"
+}
+,
+{
+  "statusCode": 401,
+  "details": "Unauthorized - Authentication is required.",
+  "message": "User not authenticated.",
+  "url": "https://example.com/protected",
+  "date": "2025-05-26T14:04:09.3188939+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "An error acured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.",
+  "url": "/SearchByFlightID/2",
+  "date": "2025-05-26T14:04:09.7470479+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "An error acured.\nThere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.",
+  "url": "/api/page/1",
+  "date": "2025-05-26T14:04:09.7568338+02:00"
+}
+,
+{
+  "statusCode": 302,
+  "details": "Redirected - User has been redirected to another URL.",
+  "message": "No touchpoints found past this page. only 2 touchpoints recorded. 1 pages recorded",
+  "url": "/api/page/2/",
+  "date": "2025-05-26T14:04:09.7711375+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "An error acured.\nThere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.",
+  "url": "/api/page/1",
+  "date": "2025-05-26T14:04:34.7343831+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "An error acured.\nThere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.",
+  "url": "/api/page/1",
+  "date": "2025-05-26T14:06:36.7073839+02:00"
+}
+,
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "An error acured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.",
+  "url": "/api/page/1",
+  "date": "2025-05-26T14:07:12.2093195+02:00"
+}
+]

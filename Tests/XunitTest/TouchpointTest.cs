@@ -1,9 +1,10 @@
-﻿using ProjectD.Models;
+﻿﻿using ProjectD.Models;
 using ProjectD.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Microsoft.AspNetCore.Http;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 
 namespace ProjectD
 {
@@ -76,9 +77,32 @@ namespace ProjectD
 
             var result = await controller.GetPage1(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var message = Assert.IsType<string>(okResult.Value);
+            var message = Assert.IsType<PageManager>(okResult.Value);
 
-            Assert.Contains("Touchpoint page1", message);
+            Assert.False(message == null); // checks if message is null
+            Assert.False(message.Touchpoints?.Any(x => x == null)); // Checks if it does NOT contain any null's
+            Assert.Equal(1, message.TotalPages); // Check total pages evry 100 touchpoints should have 1 page should only have 1 page
+            Assert.Equal(2, message.Touchpoints.Length);
+            Assert.Equal(2, message.TotalTouchpointRecords);
+        }
+
+        [Fact]
+        public async Task GetPage1_Returns_Redirect()
+        {
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Path = "/api/page/2/"; // Set desired path
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await controller.GetPage1(2);
+            var okResult = Assert.IsType<RedirectResult>(result);
+            Assert.Equal("1", okResult.Url); // Redirect URL result
         }
 
         [Fact]
@@ -109,9 +133,8 @@ namespace ProjectD
             Assert.Equal(404, error.StatusCode); // check error.
             Assert.Equal("/api/page/1", error.Url); // check Url.
             Assert.Contains("not found", error.Details.ToLower()); // check detail.
-            Assert.False("An Error acured" == error.Message); // check if default message is NOT used.
-            
+            Assert.NotEqual("An Error acured", error.Message); // check if default message is NOT used.
+            Assert.Equal("An error acured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
         }
     }
 }
-

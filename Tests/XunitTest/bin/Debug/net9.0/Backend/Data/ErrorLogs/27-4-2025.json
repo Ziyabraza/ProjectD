@@ -1,0 +1,9 @@
+[
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "No touchpoints found for Flight ID 0.",
+  "url": "/api/Touchpoint/SearchByFlightID/0",
+  "date": "2025-04-27T08:49:05.4784522+02:00"
+}
+]

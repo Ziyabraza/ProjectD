@@ -1,0 +1,9 @@
+[
+{
+  "statusCode": 404,
+  "details": "Not Found - The resource could not be found.",
+  "message": "Flight with ID 0 not found.",
+  "url": "/api/Flight/0",
+  "date": "2025-04-19T13:33:53.6276837+02:00"
+}
+]
