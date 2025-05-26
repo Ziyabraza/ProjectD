@@ -37,7 +37,8 @@ namespace ProjectD
             return newTouchpoints;
         }
 
-        private string ToString(Touchpoint touchpoint) => $"{touchpoint.FlightId} || {touchpoint.TouchpointType} || {touchpoint.TouchpointTime} || {touchpoint.TouchpointPax}";
+        // unused as requested by PO
+        // private string ToString(Touchpoint touchpoint) => $"{touchpoint.FlightId} || {touchpoint.TouchpointType} || {touchpoint.TouchpointTime} || {touchpoint.TouchpointPax}";
 
         [Authorize(Roles = "Admin")]
         [HttpGet("page/{page}")]

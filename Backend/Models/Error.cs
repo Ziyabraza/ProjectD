@@ -15,6 +15,7 @@ public class Error
         {
             return StatusCode switch
             {
+                204 => "No Content - Recource is gone or missing",
                 302 => "Redirected - User has been redirected to another URL.",
                 400 => "Bad Request - The server could not understand the request.",
                 401 => "Unauthorized - Authentication is required.",
