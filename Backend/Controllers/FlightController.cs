@@ -35,7 +35,7 @@ namespace ProjectD
 
         [HttpGet("filter")]
         public async Task<IActionResult> FilterFlights(
-            [FromQuery] DateTime? date, 
+            [FromQuery] string? date, 
             [FromQuery] string? country, 
             [FromQuery] int page = 1)
         {
@@ -45,11 +45,24 @@ namespace ProjectD
 
             var query = _context.Flights.AsQueryable();
 
-            if (date.HasValue)
+            // Datumfilter op basis van string "YYYY-MM-DD"
+            if (!string.IsNullOrEmpty(date))
             {
-                query = query.Where(f => f.ScheduledLocal.Date == date.Value.Date);
+                if (DateTime.TryParse(date, out DateTime parsedDate))
+                {
+                    // Zorg dat de datetime als UTC wordt behandeld om problemen met PostgreSQL te voorkomen
+                    parsedDate = DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
+
+                    // Vergelijk alleen op datumdeel
+                    query = query.Where(f => f.ScheduledLocal.Date == parsedDate.Date);
+                }
+                else
+                {
+                    return BadRequest(new { status = 400, message = "Ongeldig datumformaat. Gebruik YYYY-MM-DD." });
+                }
             }
 
+            // Filter op land (hoofdletterongevoelig)
             if (!string.IsNullOrEmpty(country))
             {
                 query = query.Where(f => f.Country.ToLower() == country.ToLower());
@@ -65,7 +78,12 @@ namespace ProjectD
 
             if (!flights.Any())
             {
-                return NotFound(new { status = 404, path = Request.Path, message = "No flights found for the given filters." });
+                return NotFound(new
+                {
+                    status = 404,
+                    path = Request.Path,
+                    message = "Geen vluchten gevonden voor de opgegeven filters."
+                });
             }
 
             return Ok(new
@@ -77,7 +95,5 @@ namespace ProjectD
                 data = flights
             });
         }
-
-
     }
 }
