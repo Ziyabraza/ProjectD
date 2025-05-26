@@ -45,15 +45,12 @@ namespace ProjectD
 
             var query = _context.Flights.AsQueryable();
 
-            // Datumfilter op basis van string "YYYY-MM-DD"
             if (!string.IsNullOrEmpty(date))
             {
                 if (DateTime.TryParse(date, out DateTime parsedDate))
                 {
-                    // Zorg dat de datetime als UTC wordt behandeld om problemen met PostgreSQL te voorkomen
                     parsedDate = DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
 
-                    // Vergelijk alleen op datumdeel
                     query = query.Where(f => f.ScheduledLocal.Date == parsedDate.Date);
                 }
                 else
@@ -62,7 +59,6 @@ namespace ProjectD
                 }
             }
 
-            // Filter op land (hoofdletterongevoelig)
             if (!string.IsNullOrEmpty(country))
             {
                 query = query.Where(f => f.Country.ToLower() == country.ToLower());
