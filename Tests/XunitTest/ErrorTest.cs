@@ -5,6 +5,7 @@ namespace ProjectD
 {
     public class ErrorTest
     {
+        public static string ErrorDefaultMessage() => new Error(200, "Returning 'An Error has Acccured' default message").Message;
         [Fact]
         public async Task TestNoMessageErrorObject()
         {
