@@ -24,6 +24,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(80); // Use 80 for Azure
+});
+
+
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
