@@ -55,5 +55,64 @@ namespace ProjectD
             }
             return Ok(flightsLinks);
         }
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterFlights(
+        [FromQuery] string? date, 
+        [FromQuery] string? country, 
+        [FromQuery] int page = 1)
+        {
+            const int pageSize = 100;
+
+            if (page < 1) page = 1;
+
+            var query = _context.Flights.AsQueryable();
+
+            if (!string.IsNullOrEmpty(date))
+            {
+                if (DateTime.TryParse(date, out DateTime parsedDate))
+                {
+                    parsedDate = DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
+
+                    query = query.Where(f => f.ScheduledLocal.Date == parsedDate.Date);
+                }
+                else
+                {
+                    return BadRequest(new { status = 400, message = "Use YYYY-MM-DD." });
+                }
+            }
+
+            if (!string.IsNullOrEmpty(country))
+            {
+                query = query.Where(f => f.Country.ToLower() == country.ToLower());
+            }
+
+            var totalItems = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var flights = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            if (!flights.Any())
+            {
+                return NotFound(new
+                {
+                    status = 404,
+                    path = Request.Path,
+                    message = "No flights found for the given criteria."
+                });
+            }
+
+            return Ok(new
+            {
+                page,
+                pageSize,
+                totalPages,
+                totalItems,
+                data = flights
+            });
+        }
     }
 }
