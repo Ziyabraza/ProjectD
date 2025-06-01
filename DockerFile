@@ -1,21 +1,17 @@
-# Use .NET SDK to build
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
 
-# Copy and restore dependencies
 COPY *.csproj ./
 RUN dotnet restore
 
-# Copy all and build
 COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o /app/publish
 
-# Runtime image
+# Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/out .
+COPY --from=build /app/publish .
 
-# Expose port
 EXPOSE 80
-
 ENTRYPOINT ["dotnet", "ProjectD.dll"]
