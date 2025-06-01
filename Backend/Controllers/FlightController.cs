@@ -20,16 +20,16 @@ namespace ProjectD
         [HttpGet("{flightNumber}")]
         public async Task<ActionResult<Flight>> GetFlightByFlightNumber(string flightNumber)
         {
-            Console.WriteLine("[DEBUG] FlightNumber ontvangen: " + flightNumber);  // Log de input
+            Console.WriteLine("[DEBUG] FlightNumber received: " + flightNumber);  // Log de input
 
             var flight = await _context.Flights.FirstOrDefaultAsync(f => f.FlightNumber == flightNumber);
             if (flight == null)
             {
-                Console.WriteLine("[DEBUG] Flight niet gevonden.");
+                Console.WriteLine("[DEBUG] Flight not found.");
                 return NotFound(new { message = "Flight not found" });
             }
 
-            Console.WriteLine("[DEBUG] Flight gevonden: " + flight.FlightNumber);
+            Console.WriteLine("[DEBUG] Flight found: " + flight.FlightNumber);
             return Ok(flight);
         }
 
@@ -55,7 +55,7 @@ namespace ProjectD
                 }
                 else
                 {
-                    return BadRequest(new { status = 400, message = "Ongeldig datumformaat. Gebruik YYYY-MM-DD." });
+                    return BadRequest(new { status = 400, message = "Use YYYY-MM-DD." });
                 }
             }
 
@@ -78,7 +78,7 @@ namespace ProjectD
                 {
                     status = 404,
                     path = Request.Path,
-                    message = "Geen vluchten gevonden voor de opgegeven filters."
+                    message = "No flights found for the given criteria."
                 });
             }
 
