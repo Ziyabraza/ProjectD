@@ -1,0 +1,6 @@
+@DBommer_HostAddress = http://localhost:5178
+
+GET {{DBommer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
