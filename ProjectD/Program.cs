@@ -13,6 +13,10 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using NBomber.CSharp;
+using NBomber.Http;
+using Newtonsoft.Json;
+using ProjectD.Models;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -137,4 +141,78 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.Run(); 
+app.Run();
+StressTest.Run();
+
+public static class StressTest
+{
+    public static void Run()
+    {
+        var httpClient = new HttpClient();
+
+        var scenario = Scenario.Create("login", async context =>
+        {
+            await Task.Delay(500);
+
+            var loginData = new
+            {
+                username = "testuser",       // Replace with valid user
+                password = "password123"     // Replace with valid password
+            };
+
+            var json = JsonConvert.SerializeObject(loginData);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync("http://localhost:5165/api/auth/login", content);
+
+            return Response.Ok();
+        }
+        ).WithoutWarmUp();
+
+        NBomberRunner
+            .RegisterScenarios(scenario)
+            .Run();
+    }
+}
+// var httpClient = new HttpClient();
+
+// var step = HttpStep.Create("get_flights_with_limit", httpClient, async (client, context) =>
+// {
+//     var limit = new Random().Next(1, 100); // Randomize to simulate varying load
+//     var url = $"http://localhost:5165/api/StackOverflow/Expirimental/GetWithLimit/{limit}/Flights";
+
+//     var response = await client.GetAsync(url);
+
+//     return response.IsSuccessStatusCode
+//         ? Response.Ok()
+//         : Response.Fail($"Status: {response.StatusCode}");
+// });
+
+// var scenario = ScenarioBuilder.CreateScenario("http_scenario", step)
+//     .WithLoadSimulations(Simulation.Inject(rate: 100, interval: TimeSpan.FromSeconds(1), during: TimeSpan.FromMinutes(3)));
+
+// NBomberRunner
+//     .RegisterScenarios(scenario)
+//     .Run();
+
+// var httpClient = new HttpClient();
+// {
+//     var step = HttpStep.Create("get-touchpoints-with-limit", httpClient, async (client, context) =>
+//     {
+//         var limit = 100; // You can loop or randomize this
+//         var response = await client.GetAsync($"http://localhost:5165/api/StackOverflow/Expirimental/GetWithLimit/{limit}/Flights");
+
+//         return response.IsSuccessStatusCode
+//             ? Response.Ok()
+//             : Response.Fail();
+//     });
+
+//     var scenario = ScenarioBuilder.CreateScenario("touchpoints_load_test", step)
+//         .WithWarmUpDuration(TimeSpan.FromSeconds(5))
+//         .WithLoadSimulations(Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(30)));
+
+//     NBomberRunner
+//         .RegisterScenarios(scenario)
+//         .Run();
+// }
+          
