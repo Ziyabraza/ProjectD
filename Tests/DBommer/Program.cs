@@ -10,12 +10,24 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        // !!!WARNING!!! Make sure you back up and replace SeriLog and ErrorLogs afther bomming because if there is an Error response it will bloat these files and the server.
         // <-- Actually run the stress test
-        var something = StressTest.GetJwtToken();
-        Console.WriteLine(something.Result);
-        if (something != null)
+        var token = StressTest.GetJwtToken();
+        Console.WriteLine(token.Result);
+        List<string> paths = new()
         {
-            StressTest.Run();
+            "http://localhost:5165/api/Touchpoint/page/1",
+            "http://localhost:5165/api/Touchpoint/page/2",
+            "http://localhost:5165/api/Touchpoint/page/3",
+            "http://localhost:5165/api/Touchpoint/page/4",
+            "http://localhost:5165/api/Touchpoint/page/5"
+        };
+        if (token != null)
+        {
+            foreach (string path in paths)
+            {
+                StressTest.Run(token.Result.ToString(), path);
+            }
         }
     }
 }
@@ -43,31 +55,27 @@ public static class StressTest
 
         return result.token;
     }
-    public static void Run()
+    public static void Run(string token, string path)
     {
         var httpClient = new HttpClient();
-
-        var scenario = Scenario.Create("login", async context =>
-        {
-            await Task.Delay(500);
-
-            var loginData = new
+        httpClient.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            var scenario = Scenario.Create("login", async context =>
             {
-                username = "Admin1",       // Replace with valid user
-                password = "password123"     // Replace with valid password
-            };
+                await Task.Delay(0); // sleep at each attempt
 
-            var json = JsonConvert.SerializeObject(loginData);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await httpClient.GetAsync(path); // you can put your URL here to for performance test, by bomming this URL
 
-            var response = await httpClient.GetAsync("http://localhost:5165/api/Touchpoint/page/1");
-
-            return Response.Ok();
-        }
-        ).WithoutWarmUp();
+                if (response.IsSuccessStatusCode)
+                    return Response.Ok();
+                else
+                    return Response.Fail(response.StatusCode);
+            }).WithoutWarmUp();
 
         NBomberRunner
             .RegisterScenarios(scenario)
             .Run();
     }
 }
+
+

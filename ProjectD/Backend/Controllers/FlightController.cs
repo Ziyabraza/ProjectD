@@ -41,7 +41,7 @@ namespace ProjectD
         {
             var URL = $"{Request.Scheme}://{Request.Host}/api/flight";
             var flightsLinks = await _context.Flights
-            .Select(f => new 
+            .Select(f => new
             {
                 f.Id
             })
