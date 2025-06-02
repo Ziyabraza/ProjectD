@@ -15,7 +15,7 @@ public class Program
         Console.WriteLine(something.Result);
         if (something != null)
         {
-            StressTest.Run();
+            StressTest.Run(something.Result.ToString());
         }
     }
 }
@@ -43,31 +43,27 @@ public static class StressTest
 
         return result.token;
     }
-    public static void Run()
+    public static void Run(string token)
     {
         var httpClient = new HttpClient();
-
-        var scenario = Scenario.Create("login", async context =>
-        {
-            await Task.Delay(500);
-
-            var loginData = new
+        httpClient.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            var scenario = Scenario.Create("login", async context =>
             {
-                username = "Admin1",       // Replace with valid user
-                password = "password123"     // Replace with valid password
-            };
+                await Task.Delay(0); // sleep at each attempt
 
-            var json = JsonConvert.SerializeObject(loginData);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await httpClient.GetAsync("http://localhost:5165/api/Touchpoint/page/1"); // you can put your URL here to for performance test, by bomming this URL
 
-            var response = await httpClient.GetAsync("http://localhost:5165/api/Touchpoint/page/1");
-
-            return Response.Ok();
-        }
-        ).WithoutWarmUp();
+                if (response.IsSuccessStatusCode)
+                    return Response.Ok();
+                else
+                    return Response.Fail(response.StatusCode);
+            }).WithoutWarmUp();
 
         NBomberRunner
             .RegisterScenarios(scenario)
             .Run();
     }
 }
+
+

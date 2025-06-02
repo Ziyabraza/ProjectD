@@ -163,6 +163,9 @@ public static class StressTest
             var json = JsonConvert.SerializeObject(loginData);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
+            httpClient.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer ", content.ToString());
+
             var response = await httpClient.PostAsync("http://localhost:5165/api/auth/login", content);
 
             return Response.Ok();
