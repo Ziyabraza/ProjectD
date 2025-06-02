@@ -137,9 +137,13 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+app.MapGet("/", () => Results.Redirect("/swagger"));
+
 
 app.Run();
 StressTest.Run();
