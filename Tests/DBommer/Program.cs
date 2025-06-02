@@ -10,12 +10,24 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        // !!!WARNING!!! Make sure you back up and replace SeriLog and ErrorLogs afther bomming because if there is an Error response it will bloat these files and the server.
         // <-- Actually run the stress test
-        var something = StressTest.GetJwtToken();
-        Console.WriteLine(something.Result);
-        if (something != null)
+        var token = StressTest.GetJwtToken();
+        Console.WriteLine(token.Result);
+        List<string> paths = new()
         {
-            StressTest.Run(something.Result.ToString());
+            "http://localhost:5165/api/Touchpoint/page/1",
+            "http://localhost:5165/api/Touchpoint/page/2",
+            "http://localhost:5165/api/Touchpoint/page/3",
+            "http://localhost:5165/api/Touchpoint/page/4",
+            "http://localhost:5165/api/Touchpoint/page/5"
+        };
+        if (token != null)
+        {
+            foreach (string path in paths)
+            {
+                StressTest.Run(token.Result.ToString(), path);
+            }
         }
     }
 }
@@ -43,7 +55,7 @@ public static class StressTest
 
         return result.token;
     }
-    public static void Run(string token)
+    public static void Run(string token, string path)
     {
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Authorization =
@@ -52,7 +64,7 @@ public static class StressTest
             {
                 await Task.Delay(0); // sleep at each attempt
 
-                var response = await httpClient.GetAsync("http://localhost:5165/api/Touchpoint/page/1"); // you can put your URL here to for performance test, by bomming this URL
+                var response = await httpClient.GetAsync(path); // you can put your URL here to for performance test, by bomming this URL
 
                 if (response.IsSuccessStatusCode)
                     return Response.Ok();
