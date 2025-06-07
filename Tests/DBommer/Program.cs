@@ -20,14 +20,21 @@ public class Program
             "http://localhost:5165/api/Touchpoint/page/2",
             "http://localhost:5165/api/Touchpoint/page/3",
             "http://localhost:5165/api/Touchpoint/page/4",
-            "http://localhost:5165/api/Touchpoint/page/5"
+            "http://localhost:5165/api/Touchpoint/page/5",
+            "http://localhost:5165/api/Touchpoint/page/6",
+            "http://localhost:5165/api/Touchpoint/page/7",
+            "http://localhost:5165/api/Touchpoint/page/8",
+            "http://localhost:5165/api/Touchpoint/page/9",
+            "http://localhost:5165/api/Touchpoint/page/10"
         };
         if (token != null)
         {
-            foreach (string path in paths)
-            {
-                StressTest.Run(token.Result.ToString(), path);
-            }
+            var scenarios = paths.Select(path => StressTest.RunAll(token.Result.ToString(), path)).ToArray();
+            // StressTest.RunSingle(token.Result.ToString(), paths);
+
+            NBomberRunner
+                .RegisterScenarios(scenarios)
+                .Run();
         }
     }
 }
@@ -55,27 +62,48 @@ public static class StressTest
 
         return result.token;
     }
-    public static void Run(string token, string path)
+    public static void RunSingle(string token, List<string> ActualPath)
     {
+        var path = ActualPath[0]; // graps first in list
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var scenario = Scenario.Create("login", async context =>
-            {
-                await Task.Delay(0); // sleep at each attempt
 
-                var response = await httpClient.GetAsync(path); // you can put your URL here to for performance test, by bomming this URL
+        var scenario = Scenario.Create($"bombin {path}", async context =>
+        {
+            await Task.Delay(0); // sleep at each attempt
 
-                if (response.IsSuccessStatusCode)
-                    return Response.Ok();
-                else
-                    return Response.Fail(response.StatusCode);
-            }).WithoutWarmUp();
+            var response = await httpClient.GetAsync(path); // you can put your URL here to for performance test, by bomming this URL
+
+            if (response.IsSuccessStatusCode)
+                return Response.Ok();
+            else
+                return Response.Fail(response.StatusCode);
+        }).WithoutWarmUp();
 
         NBomberRunner
             .RegisterScenarios(scenario)
             .Run();
     }
-}
 
+    public static NBomber.Contracts.ScenarioProps RunAll(string token, string path)
+    {
+        var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        return Scenario.Create($"bombin {path}", async context =>
+        {
+            await Task.Delay(0);
+
+            var response = await httpClient.GetAsync(path);
+
+            if (response.IsSuccessStatusCode)
+                return Response.Ok();
+            else
+                return Response.Fail(response.StatusCode);
+
+        }).WithoutWarmUp();
+    }
+}
 

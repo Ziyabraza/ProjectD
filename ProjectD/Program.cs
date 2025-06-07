@@ -141,81 +141,31 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.Run();
-StressTest.Run();
-
-public static class StressTest
+app.Use(async (context, next) =>
 {
-    public static void Run()
+    try
     {
-        var httpClient = new HttpClient();
-
-        var scenario = Scenario.Create("login", async context =>
+        await next();
+        
+        // Handle non-success status codes (like 404, 400, etc.)
+        if (context.Response.StatusCode >= 400 && context.Response.StatusCode != 401 && context.Response.StatusCode != 404) // skip 401 to avoid logging auth failures too much
         {
-            await Task.Delay(500);
+            context.Response.ContentType = "application/json";
 
-            var loginData = new
-            {
-                username = "testuser",       // Replace with valid user
-                password = "password123"     // Replace with valid password
-            };
-
-            var json = JsonConvert.SerializeObject(loginData);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            httpClient.DefaultRequestHeaders.Authorization = 
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer ", content.ToString());
-
-            var response = await httpClient.PostAsync("http://localhost:5165/api/auth/login", content);
-
-            return Response.Ok();
+            var error = new Error(context.Response.StatusCode, context.Request.Path);
+            // var json = JsonConvert.SerializeObject(error);
+            // await context.Response.WriteAsync(json);
         }
-        ).WithoutWarmUp();
-
-        NBomberRunner
-            .RegisterScenarios(scenario)
-            .Run();
     }
-}
-// var httpClient = new HttpClient();
+    catch (Exception ex)
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
 
-// var step = HttpStep.Create("get_flights_with_limit", httpClient, async (client, context) =>
-// {
-//     var limit = new Random().Next(1, 100); // Randomize to simulate varying load
-//     var url = $"http://localhost:5165/api/StackOverflow/Expirimental/GetWithLimit/{limit}/Flights";
+        var error = new Error(500, context.Request.Path, ex.Message);
+        // var json = JsonConvert.SerializeObject(error);
+        // await context.Response.WriteAsync(json);
+    }
+});
 
-//     var response = await client.GetAsync(url);
-
-//     return response.IsSuccessStatusCode
-//         ? Response.Ok()
-//         : Response.Fail($"Status: {response.StatusCode}");
-// });
-
-// var scenario = ScenarioBuilder.CreateScenario("http_scenario", step)
-//     .WithLoadSimulations(Simulation.Inject(rate: 100, interval: TimeSpan.FromSeconds(1), during: TimeSpan.FromMinutes(3)));
-
-// NBomberRunner
-//     .RegisterScenarios(scenario)
-//     .Run();
-
-// var httpClient = new HttpClient();
-// {
-//     var step = HttpStep.Create("get-touchpoints-with-limit", httpClient, async (client, context) =>
-//     {
-//         var limit = 100; // You can loop or randomize this
-//         var response = await client.GetAsync($"http://localhost:5165/api/StackOverflow/Expirimental/GetWithLimit/{limit}/Flights");
-
-//         return response.IsSuccessStatusCode
-//             ? Response.Ok()
-//             : Response.Fail();
-//     });
-
-//     var scenario = ScenarioBuilder.CreateScenario("touchpoints_load_test", step)
-//         .WithWarmUpDuration(TimeSpan.FromSeconds(5))
-//         .WithLoadSimulations(Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(30)));
-
-//     NBomberRunner
-//         .RegisterScenarios(scenario)
-//         .Run();
-// }
-          
+app.Run();   
