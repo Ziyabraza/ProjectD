@@ -115,8 +115,8 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = "https://projectje-d6d4arfxb6anhrcj.westeurope-01.azurewebsites.net/swagger/index.html", // Use the correct audience from your configuration
-        // ValidAudience = builder.Configuration["JwtSettings:Audience"], // Uncomment if you are running it locally
+        // ValidAudience = "https://projectje-d6d4arfxb6anhrcj.westeurope-01.azurewebsites.net/swagger/index.html", // Use the correct audience from your configuration
+        ValidAudience = builder.Configuration["JwtSettings:Audience"], // Uncomment if you are running it locally
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
