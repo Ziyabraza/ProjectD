@@ -106,7 +106,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true; // Set true in production!
+    options.RequireHttpsMetadata = true; 
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -115,7 +115,8 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
+        ValidAudience = "https://projectje-d6d4arfxb6anhrcj.westeurope-01.azurewebsites.net", // Use the correct audience from your configuration
+        // ValidAudience = builder.Configuration["JwtSettings:Audience"], // Uncomment if you are running it locally
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
@@ -135,8 +136,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-
 
 app.UseAuthentication();
 app.UseAuthorization();
