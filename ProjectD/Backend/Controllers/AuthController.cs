@@ -9,8 +9,6 @@ using System.Text;
 
 namespace ProjectD
 {
-    
-    
     [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
