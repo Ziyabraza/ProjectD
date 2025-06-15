@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.IO;
+using System.Linq;
 
 namespace ProjectD
 {
@@ -55,10 +57,44 @@ namespace ProjectD
                 role = user.Role
             });
         }
+
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] RegisterRequest request)
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Backend", "Data", "users.json");
+
+            var userFile = System.IO.File.ReadAllText(filePath);
+            var users = JsonConvert.DeserializeObject<List<User>>(userFile) ?? new List<User>();
+
+            if (users.Any(u => u.Username == request.Username))
+            {
+                return BadRequest(new { message = "Username already exists" });
+            }
+
+            var newUser = new User
+            {
+                Username = request.Username,
+                Password = request.Password,
+                Role = "User"
+            };
+
+            users.Add(newUser);
+
+            var json = JsonConvert.SerializeObject(users, Formatting.Indented);
+            System.IO.File.WriteAllText(filePath, json);
+
+            return Ok(new { message = "User registered successfully" });
+        }
     }
 
     public class LoginRequest
     {   
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class RegisterRequest
+    {
         public string Username { get; set; }
         public string Password { get; set; }
     }
