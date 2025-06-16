@@ -10,12 +10,31 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        // !!!WARNING!!! Make sure you back up and replace SeriLog and ErrorLogs afther bomming because if there is an Error response it will bloat these files and the server.
         // <-- Actually run the stress test
-        var something = StressTest.GetJwtToken();
-        Console.WriteLine(something.Result);
-        if (something != null)
+        var token = StressTest.GetJwtToken();
+        Console.WriteLine(token.Result);
+        List<string> paths = new()
         {
-            StressTest.Run();
+            "http://localhost:5165/api/Touchpoint/page/1",
+            "http://localhost:5165/api/Touchpoint/page/2",
+            "http://localhost:5165/api/Touchpoint/page/3",
+            "http://localhost:5165/api/Touchpoint/page/4",
+            "http://localhost:5165/api/Touchpoint/page/5",
+            "http://localhost:5165/api/Touchpoint/page/6",
+            "http://localhost:5165/api/Touchpoint/page/7",
+            "http://localhost:5165/api/Touchpoint/page/8",
+            "http://localhost:5165/api/Touchpoint/page/9",
+            "http://localhost:5165/api/Touchpoint/page/10"
+        };
+        if (token != null)
+        {
+            var scenarios = paths.Select(path => StressTest.RunAll(token.Result.ToString(), path)).ToArray();
+            // StressTest.RunSingle(token.Result.ToString(), paths);
+
+            NBomberRunner
+                .RegisterScenarios(scenarios)
+                .Run();
         }
     }
 }
@@ -43,31 +62,48 @@ public static class StressTest
 
         return result.token;
     }
-    public static void Run()
+    public static void RunSingle(string token, List<string> ActualPath)
     {
+        var path = ActualPath[0]; // graps first in list
         var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        var scenario = Scenario.Create("login", async context =>
+        var scenario = Scenario.Create($"bombin {path}", async context =>
         {
-            await Task.Delay(500);
+            await Task.Delay(0); // sleep at each attempt
 
-            var loginData = new
-            {
-                username = "Admin1",       // Replace with valid user
-                password = "password123"     // Replace with valid password
-            };
+            var response = await httpClient.GetAsync(path); // you can put your URL here to for performance test, by bomming this URL
 
-            var json = JsonConvert.SerializeObject(loginData);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await httpClient.GetAsync("http://localhost:5165/api/Touchpoint/page/1");
-
-            return Response.Ok();
-        }
-        ).WithoutWarmUp();
+            if (response.IsSuccessStatusCode)
+                return Response.Ok();
+            else
+                return Response.Fail(response.StatusCode);
+        }).WithoutWarmUp();
 
         NBomberRunner
             .RegisterScenarios(scenario)
             .Run();
     }
+
+    public static NBomber.Contracts.ScenarioProps RunAll(string token, string path)
+    {
+        var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        return Scenario.Create($"bombin {path}", async context =>
+        {
+            await Task.Delay(0);
+
+            var response = await httpClient.GetAsync(path);
+
+            if (response.IsSuccessStatusCode)
+                return Response.Ok();
+            else
+                return Response.Fail(response.StatusCode);
+
+        }).WithoutWarmUp();
+    }
 }
+
