@@ -53,7 +53,7 @@ namespace ProjectD
             int end = 100*page;
             var touchpoints = await _context.Touchpoints.ToArrayAsync();
             if(PageMessage(page, start, end, touchpoints) == null) 
-            { return NotFound(new Error(404, Request.Path, $"An error acured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.")); }
+            { return NotFound(new Error(404, Request.Path, $"An error occurred. There are no Touchpoints found, make contact with Webprovider if its ongoing issue. Sorry for inconvinence.")); }
             if(PageMessage(page, start, end, touchpoints)?.Any(tp => tp != null) == false) // checks if there is any touchpoint availble past this page to display.
             { 
                 int redirectObj = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(touchpoints.Length)/100.00)); // calculates what is the last page for redirect
@@ -99,7 +99,7 @@ namespace ProjectD
             }
             if(touchpoints == null || touchpoints.Length == 0) 
             { 
-                return NotFound(new Error(404, Request.Path, "An error acured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); 
+                return NotFound(new Error(404, Request.Path, "An error occurred.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.")); 
             }
             if(results == null || results.Count == 0) 
             { 
