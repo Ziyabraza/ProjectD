@@ -141,31 +141,31 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.Use(async (context, next) =>
-{
-    try
-    {
-        await next();
+// app.Use(async (context, next) =>
+// {
+//     try
+//     {
+//         await next();
         
-        // Handle non-success status codes (like 404, 400, etc.)
-        if (context.Response.StatusCode >= 400 && context.Response.StatusCode != 401 && context.Response.StatusCode != 404) // skip 401 to avoid logging auth failures too much
-        {
-            context.Response.ContentType = "application/json";
+//         // Handle non-success status codes (like 404, 400, etc.)
+//         if (context.Response.StatusCode >= 400 && context.Response.StatusCode != 401 && context.Response.StatusCode != 404) // skip 401 to avoid logging auth failures too much
+//         {
+//             context.Response.ContentType = "application/json";
 
-            var error = new Error(context.Response.StatusCode, context.Request.Path);
-            // var json = JsonConvert.SerializeObject(error);
-            // await context.Response.WriteAsync(json);
-        }
-    }
-    catch (Exception ex)
-    {
-        context.Response.StatusCode = 500;
-        context.Response.ContentType = "application/json";
+//             var error = new Error(context.Response.StatusCode, context.Request.Path);
+//             // var json = JsonConvert.SerializeObject(error);
+//             // await context.Response.WriteAsync(json);
+//         }
+//     }
+//     catch (Exception ex)
+//     {
+//         context.Response.StatusCode = 500;
+//         context.Response.ContentType = "application/json";
 
-        var error = new Error(500, context.Request.Path, ex.Message);
-        // var json = JsonConvert.SerializeObject(error);
-        // await context.Response.WriteAsync(json);
-    }
-});
+//         var error = new Error(500, context.Request.Path, ex.Message);
+//         // var json = JsonConvert.SerializeObject(error);
+//         // await context.Response.WriteAsync(json);
+//     }
+// });
 
 app.Run();   
