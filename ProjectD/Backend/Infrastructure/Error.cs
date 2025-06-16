@@ -58,32 +58,40 @@ public class Error
 
     private void LogError(DateTime date)
     {
-        // Serialize the error object to JSON with indentation
-        string errorJson = JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
+        try
         {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-        });
+            // Serialize the error object to JSON with indentation
+            string errorJson = JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
 
-        // DateTime date = DateTime.Now; 
-        DateOnly dateOnly = new DateOnly(date.Year, date.Month, date.Day);
-        string path = @$"Backend\Data\ErrorLogs\{dateOnly}.json";
+            // DateTime date = DateTime.Now; 
+            DateOnly dateOnly = new DateOnly(date.Year, date.Month, date.Day);
+            string path = @$"Backend\Data\ErrorLogs\{dateOnly}.json";
 
-        if(File.Exists(path) && new FileInfo(path).Length > 0)
-        {
-            // If the file exists, read the existing content (remove the closing bracket) and append the new error
-            string existingJson = File.ReadAllText(path);
-            existingJson = existingJson.TrimEnd(']'); // Remove the closing bracket
-            existingJson += $",{Environment.NewLine}{errorJson}"; // Add the new error with a comma
-            existingJson += Environment.NewLine + "]"; // Close the JSON array
+            if (File.Exists(path) && new FileInfo(path).Length > 0)
+            {
+                // If the file exists, read the existing content (remove the closing bracket) and append the new error
+                string existingJson = File.ReadAllText(path);
+                existingJson = existingJson.TrimEnd(']'); // Remove the closing bracket
+                existingJson += $",{Environment.NewLine}{errorJson}"; // Add the new error with a comma
+                existingJson += Environment.NewLine + "]"; // Close the JSON array
 
-            // Write the updated content back to the file
-            File.WriteAllText(path, existingJson);
+                // Write the updated content back to the file
+                File.WriteAllText(path, existingJson);
+            }
+            else
+            {
+                // If the file does not exist or is empty, start a new JSON array and add the first error
+                string jsonArray = "[" + Environment.NewLine + errorJson + Environment.NewLine + "]";
+                File.WriteAllText(path, jsonArray);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            // If the file does not exist or is empty, start a new JSON array and add the first error
-            string jsonArray = "[" + Environment.NewLine + errorJson + Environment.NewLine + "]";
-            File.WriteAllText(path, jsonArray);
+            // Handle any exceptions that occur during logging
+            Console.WriteLine($"Error logging to file: {ex.Message}");
         }
     }
 
