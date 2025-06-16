@@ -13,5 +13,20 @@
     "Username": "User2",
     "Password": "xyz456",
     "Role": "User"
+  },
+  {
+    "Username": "abc",
+    "Password": "abc123",
+    "Role": "User"
+  },
+  {
+    "Username": "bora",
+    "Password": "luigi",
+    "Role": "User"
+  },
+  {
+    "Username": "hudayfa",
+    "Password": "fufu",
+    "Role": "User"
   }
 ]

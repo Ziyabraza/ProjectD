@@ -33,7 +33,7 @@ namespace ProjectD
                 u.Username == request.Username && u.Password == request.Password);
 
             if (user == null)
-                return Unauthorized(new {"Invalid username or password" });
+                new Error(302, Request.Path, "Invalid username or password.");
 
             
             var key = Encoding.UTF8.GetBytes("!!H0g3ScH00LR0tt3RdAm@2025-04-22??");
@@ -68,7 +68,7 @@ namespace ProjectD
 
             if (users.Any(u => u.Username == request.Username))
             {
-                return BadRequest(new {"Username already exists" });
+                new Error(302, Request.Path, "Username already exists.");
             }
 
             var newUser = new User
@@ -83,7 +83,9 @@ namespace ProjectD
             var json = JsonConvert.SerializeObject(users, Formatting.Indented);
             System.IO.File.WriteAllText(filePath, json);
 
-            return Ok(new {"User registered successfully" });
+            return Ok("User registered successfully.\n" +
+                $"Username = {newUser.Username}\n" + 
+                $"Role = {newUser.Role}");
         }
     }
 
