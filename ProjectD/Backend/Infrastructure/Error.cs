@@ -21,6 +21,7 @@ public class Error
                 401 => "Unauthorized - Authentication is required.",
                 403 => "Forbidden - You do not have permission.",
                 404 => "Not Found - The resource could not be found.",
+                405 => "Method Not Allowed - The HTTP method is not allowed for the requested resource.",
                 500 => "Internal Server Error - Something went wrong on the server.",
                 _ => "Unknown Error - No details available."
             };
