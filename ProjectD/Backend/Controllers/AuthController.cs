@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.IO;
+using System.Linq;
 
 namespace ProjectD
 {
@@ -31,7 +33,7 @@ namespace ProjectD
                 u.Username == request.Username && u.Password == request.Password);
 
             if (user == null)
-                return Unauthorized(new { message = "Invalid username or password" });
+                new Error(302, Request.Path, "Invalid username or password.");
 
             
             var key = Encoding.UTF8.GetBytes("!!H0g3ScH00LR0tt3RdAm@2025-04-22??");
@@ -55,10 +57,46 @@ namespace ProjectD
                 role = user.Role
             });
         }
+
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] RegisterRequest request)
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Backend", "Data", "users.json");
+
+            var userFile = System.IO.File.ReadAllText(filePath);
+            var users = JsonConvert.DeserializeObject<List<User>>(userFile) ?? new List<User>();
+
+            if (users.Any(u => u.Username == request.Username))
+            {
+                new Error(302, Request.Path, "Username already exists.");
+            }
+
+            var newUser = new User
+            {
+                Username = request.Username,
+                Password = request.Password,
+                Role = "User"
+            };
+
+            users.Add(newUser);
+
+            var json = JsonConvert.SerializeObject(users, Formatting.Indented);
+            System.IO.File.WriteAllText(filePath, json);
+
+            return Ok("User registered successfully.\n" +
+                $"Username = {newUser.Username}\n" + 
+                $"Role = {newUser.Role}");
+        }
     }
 
     public class LoginRequest
     {   
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class RegisterRequest
+    {
         public string Username { get; set; }
         public string Password { get; set; }
     }
