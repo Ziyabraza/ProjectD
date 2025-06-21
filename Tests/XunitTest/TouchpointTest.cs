@@ -1,5 +1,4 @@
 ﻿﻿using ProjectD.Models;
-using ProjectD.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -8,6 +7,7 @@ using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 
 namespace ProjectD
 {
+    
     public class TouchpointTest
     {
         // when no message is given it will give default message
@@ -76,7 +76,7 @@ namespace ProjectD
             Assert.Equal(404, error.StatusCode); // check error.
             Assert.Equal("/SearchByFlightID/2", error.Url); // check Url.
             Assert.Contains("Not Found", error.Details); // check detail.
-            Assert.False("An Error acured" == error.Message); // check if default message is NOT used.
+            Assert.False("An Error occured" == error.Message); // check if default message is NOT used.
         }
 
         [Fact]
@@ -204,8 +204,8 @@ namespace ProjectD
             Assert.Equal(404, error.StatusCode); // check error.
             Assert.Equal("/api/page/1", error.Url); // check Url.
             Assert.Contains("not found", error.Details.ToLower()); // check detail.
-            Assert.NotEqual("An Error acured", error.Message); // check if default message is NOT used.
-            Assert.Equal("An error acured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
+            Assert.NotEqual("An Error occured", error.Message); // check if default message is NOT used.
+            Assert.Equal("An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
         }
 
         [Fact]
@@ -252,7 +252,7 @@ namespace ProjectD
             var error = Assert.IsType<Error>(notFoundResult.Value); // check if NotFoundObjectResult has an Error object
 
             Assert.Equal("/api/page/1", error.Url); // check Url.
-           
+
         }
 
         [Fact]
@@ -279,8 +279,8 @@ namespace ProjectD
             // Assert.Equal(404, error.StatusCode); // check error.
             // Assert.Equal("/api/page/1", error.Url); // check Url.
             Assert.Contains("not found", error.Details.ToLower()); // check detail.
-            // Assert.NotEqual("An Error acured", error.Message); // check if default message is NOT used.
-            // Assert.Equal("An error acured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
+            // Assert.NotEqual("An Error occured", error.Message); // check if default message is NOT used.
+            // Assert.Equal("An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
         }
         [Fact]
         public async Task GetPage1_Returns_NotFound_When_Empty_Database_Message_NotDeffault()
@@ -324,7 +324,7 @@ namespace ProjectD
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var error = Assert.IsType<Error>(notFoundResult.Value); // check if NotFoundObjectResult has an Error object
 
-            Assert.Equal("An error acured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
+            Assert.Equal("An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
         }
     }
 }

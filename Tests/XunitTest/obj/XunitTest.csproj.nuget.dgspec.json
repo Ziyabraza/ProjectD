@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-10\\Tests\\XunitTest\\XunitTest.csproj": {}
+    "C:\\Users\\User\\Project D\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-10\\ProjectD\\ProjectD.csproj": {
+    "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\ProjectD.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-10\\ProjectD\\ProjectD.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\ProjectD.csproj",
         "projectName": "ProjectD",
-        "projectPath": "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-10\\ProjectD\\ProjectD.csproj",
-        "packagesPath": "C:\\Users\\borag\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-10\\ProjectD\\obj\\",
+        "projectPath": "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\ProjectD.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\borag\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -80,6 +80,14 @@
               "target": "Package",
               "version": "[9.0.3, )"
             },
+            "NBomber": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
+            "NBomber.Http": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
@@ -132,21 +140,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.204/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-10\\Tests\\XunitTest\\XunitTest.csproj": {
+    "C:\\Users\\User\\Project D\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-10\\Tests\\XunitTest\\XunitTest.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Project D\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj",
         "projectName": "XunitTest",
-        "projectPath": "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-10\\Tests\\XunitTest\\XunitTest.csproj",
-        "packagesPath": "C:\\Users\\borag\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-10\\Tests\\XunitTest\\obj\\",
+        "projectPath": "C:\\Users\\User\\Project D\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\User\\Project D\\ProjectD\\Tests\\XunitTest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\borag\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -158,8 +166,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-10\\ProjectD\\ProjectD.csproj": {
-                "projectPath": "C:\\Users\\borag\\Downloads\\CMI-2025_2026\\GitHub\\ProjectD-10\\ProjectD\\ProjectD.csproj"
+              "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\ProjectD.csproj": {
+                "projectPath": "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\ProjectD.csproj"
               }
             }
           }
@@ -221,7 +229,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.204/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
