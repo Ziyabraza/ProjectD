@@ -29,6 +29,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddResponseCaching();
 builder.Services.AddSwaggerGen(options => {
     options.SwaggerDoc("v1", new() { Title = "Your API", Version = "v1" });
 
@@ -77,6 +78,7 @@ Serilog.Log.Logger = new LoggerConfiguration()
     // Made workaround in Error.cs that logs errors in a JSON file.
     // Note2: 30/03/2025: it partialy works not, but it logs unecessary data that are mostly null in the fields and dont found a workaround for that yet.
     // Note3: 31/03/2025: Should now properly log in PostpreSQL make sure to create table manualy!
+    // Note4: 07/04/2025: table is now automated
     .WriteTo.PostgreSQL(connectionString, "logs2", columnOptions, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error, needAutoCreateTable: true, needAutoCreateSchema: true) // Log to PostgreSQL, 
     .CreateLogger();
 

@@ -14,19 +14,14 @@ public class Program
         // <-- Actually run the stress test
         var token = StressTest.GetJwtToken();
         Console.WriteLine(token.Result);
-        List<string> paths = new()
+
+        List<string> paths = new();
+        for (int i = 1; i < 1001; i++)
         {
-            "http://localhost:5165/api/Touchpoint/page/1",
-            "http://localhost:5165/api/Touchpoint/page/2",
-            "http://localhost:5165/api/Touchpoint/page/3",
-            "http://localhost:5165/api/Touchpoint/page/4",
-            "http://localhost:5165/api/Touchpoint/page/5",
-            "http://localhost:5165/api/Touchpoint/page/6",
-            "http://localhost:5165/api/Touchpoint/page/7",
-            "http://localhost:5165/api/Touchpoint/page/8",
-            "http://localhost:5165/api/Touchpoint/page/9",
-            "http://localhost:5165/api/Touchpoint/page/10"
-        };
+            paths.Add($"http://localhost:5165/api/Touchpoint/page/{i}");
+        }
+            
+
         if (token != null)
         {
             var scenarios = paths.Select(path => StressTest.RunAll(token.Result.ToString(), path)).ToArray();
