@@ -1,5 +1,4 @@
 ﻿﻿using ProjectD.Models;
-using ProjectD.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -37,18 +36,95 @@ namespace ProjectD
 
             return new FlightDBContext(options);
         }
+
         [Fact]
-        public async Task GetByID_Returns_Ok_When_FlightId_Matches()
+        public async Task GetByID_Returns_Ok_When_FlightId_Matches_CheckSingle()
         {
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
 
             var result = await controller.GetByID(100);
             var okResult = Assert.IsType<OkObjectResult>(result);
             var list = Assert.IsType<List<Touchpoint>>(okResult.Value);
 
             Assert.Single(list);
+        }
+
+        [Fact]
+        public async Task GetByID_Returns_Ok_When_FlightId_Matches_FlightID()
+        {
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
+
+
+            var result = await controller.GetByID(100);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var list = Assert.IsType<List<Touchpoint>>(okResult.Value);
+
+            // Assert.Single(list);
             Assert.Equal(100, list[0].FlightId);
+        }
+
+        [Fact]
+        public async Task GetByID_Returns_Ok_When_FlightId_Matches_TouchPointType()
+        {
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
+
+            var result = await controller.GetByID(100);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var list = Assert.IsType<List<Touchpoint>>(okResult.Value);
+
+            Assert.Equal("Boarding", list[0].TouchpointType);
+        }
+
+        [Fact]
+        public async Task GetByID_Returns_Ok_When_FlightId_Matches_TouchpointTime()
+        {
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
+
+            var result = await controller.GetByID(100);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var list = Assert.IsType<List<Touchpoint>>(okResult.Value);
+            DateTime now = DateTime.Now;
+
+            // testing with Minutes and Hour only do to miliseconds diffrences
+            Assert.Equal(now.Hour, list[0].TouchpointTime.Hour); 
+            Assert.Equal(now.Minute, list[0].TouchpointTime.Minute);
+        }
+
+        [Fact]
+        public async Task GetByID_Returns_Ok_When_FlightId_Matches_TouchpointPax()
+        {
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
+
+            var result = await controller.GetByID(100);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var list = Assert.IsType<List<Touchpoint>>(okResult.Value);
+
+            Assert.Equal(180, list[0].TouchpointPax);
         }
 
         [Fact]
@@ -80,10 +156,14 @@ namespace ProjectD
         }
 
         [Fact]
-        private async Task GetPage1_OkResult()
+        public async Task GetPage1_OkResult()
         {
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
 
             var result = await controller.GetPage1(1);
             var OkResult = Assert.IsType<OkObjectResult>(result);
@@ -94,7 +174,11 @@ namespace ProjectD
         {
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context);
-
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            }; 
+            
             var result = await controller.GetPage1(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
         }
@@ -103,6 +187,10 @@ namespace ProjectD
         {
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
 
             var result = await controller.GetPage1(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -113,6 +201,10 @@ namespace ProjectD
         {
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
 
             var result = await controller.GetPage1(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -125,6 +217,10 @@ namespace ProjectD
         {
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
 
             var result = await controller.GetPage1(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -148,6 +244,10 @@ namespace ProjectD
         {
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
 
             var result = await controller.GetPage1(1);
             var okResult = Assert.IsType<OkObjectResult>(result);

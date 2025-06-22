@@ -140,8 +140,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 app.UseAuthentication();
-app.UseAuthorization();
 app.MapControllers();
+app.UseAuthorization();
 
 app.Use(async (context, next) =>
 {
@@ -150,7 +150,7 @@ app.Use(async (context, next) =>
         await next();
         
         // Handle non-success status codes (like 404, 400, etc.)
-        if (context.Response.StatusCode >= 400 && context.Response.StatusCode != 401 && context.Response.StatusCode != 404) // skip 401 to avoid logging auth failures too much
+        if (context.Response.StatusCode >= 400 && context.Response.StatusCode != 401 && context.Response.StatusCode != 404 && context.Response.StatusCode != 400) // skip 401 to avoid logging auth failures too much
         {
             context.Response.ContentType = "application/json";
 
