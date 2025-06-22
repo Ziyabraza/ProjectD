@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Reflection; 
 using NBomber.CSharp;
 using NBomber.Http;
 using Newtonsoft.Json;
@@ -29,7 +30,8 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => {
+builder.Services.AddSwaggerGen(options =>
+{
     options.SwaggerDoc("v1", new() { Title = "Your API", Version = "v1" });
 
     //JWT authenticatie voor Swagger
@@ -57,6 +59,9 @@ builder.Services.AddSwaggerGen(options => {
             new string[] {}
         }
     });
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+    options.IncludeXmlComments(xmlPath);
 });
 
 
@@ -95,7 +100,7 @@ using (var conn = new NpgsqlConnection(builder.Configuration.GetConnectionString
     }
 }
 //JWT Authentication met Key:
-var key = Encoding.UTF8.GetBytes("!!H0g3ScH00LR0tt3RdAm@2025-04-22??"); 
+var key = Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]);
 
 
 
