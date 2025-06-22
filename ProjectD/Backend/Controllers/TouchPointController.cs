@@ -26,10 +26,10 @@ namespace ProjectD
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
             {
-                Public = true,
+                Private = true,
                 MaxAge = TimeSpan.FromSeconds(60)
             };
-            Response.Headers["Vary"] = new string[] { "Accept-Encoding" };
+            Response.Headers["Vary"] = "Authorization";
             if (page < 1)
             {
                 new Error(302, Request.Path, "Page number must be greater than 0.");
@@ -67,10 +67,10 @@ namespace ProjectD
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
             {
-                Public = true,
+                Private = true,
                 MaxAge = TimeSpan.FromSeconds(60)
             };
-            Response.Headers["Vary"] = new string[] { "Accept-Encoding" };
+            Response.Headers["Vary"] = "Authorization";
             bool found = false;
             // string message = "Match(es) found:\n\n";
             List<Touchpoint> results = new();
