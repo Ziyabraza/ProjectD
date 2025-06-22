@@ -55,7 +55,7 @@ namespace ProjectD
             }
             return Ok(flightsLinks);
         }
-
+        [Authorize(Roles = "User, Admin")]
         [HttpGet("filter")]
         public async Task<IActionResult> FilterFlights(
         [FromQuery] string? date, 
