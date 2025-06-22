@@ -26,10 +26,10 @@ namespace ProjectD
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
             {
-                Public = true,
+                Private = true,
                 MaxAge = TimeSpan.FromSeconds(60)
             };
-            Response.Headers["Vary"] = new string[] { "Accept-Encoding" };
+            Response.Headers["Vary"] = "Authorization";
             Console.WriteLine("[DEBUG] Flight ID received: " + id);
 
             var flight = await _context.Flights.FirstOrDefaultAsync(f => f.Id == id);
@@ -71,10 +71,10 @@ namespace ProjectD
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
             {
-                Public = true,
+                Private = true,
                 MaxAge = TimeSpan.FromSeconds(60)
             };
-            Response.Headers["Vary"] = new string[] { "Accept-Encoding" };
+            Response.Headers["Vary"] = "Authorization";
             const int pageSize = 100;
 
             if (page < 1) page = 1;
