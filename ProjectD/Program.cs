@@ -30,6 +30,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddResponseCaching();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new() { Title = "Your API", Version = "v1" });
@@ -82,6 +83,7 @@ Serilog.Log.Logger = new LoggerConfiguration()
     // Made workaround in Error.cs that logs errors in a JSON file.
     // Note2: 30/03/2025: it partialy works not, but it logs unecessary data that are mostly null in the fields and dont found a workaround for that yet.
     // Note3: 31/03/2025: Should now properly log in PostpreSQL make sure to create table manualy!
+    // Note4: 07/04/2025: table is now automated
     .WriteTo.PostgreSQL(connectionString, "logs2", columnOptions, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error, needAutoCreateTable: true, needAutoCreateSchema: true) // Log to PostgreSQL, 
     .CreateLogger();
 
@@ -143,20 +145,18 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 app.UseAuthentication();
-app.UseAuthorization();
 app.MapControllers();
+app.UseAuthorization();
 
 // app.Use(async (context, next) =>
 // {
 //     try
 //     {
 //         await next();
-        
 //         // Handle non-success status codes (like 404, 400, etc.)
 //         if (context.Response.StatusCode >= 400 && context.Response.StatusCode != 401 && context.Response.StatusCode != 404) // skip 401 to avoid logging auth failures too much
 //         {
 //             context.Response.ContentType = "application/json";
-
 //             var error = new Error(context.Response.StatusCode, context.Request.Path);
 //             // var json = JsonConvert.SerializeObject(error);
 //             // await context.Response.WriteAsync(json);

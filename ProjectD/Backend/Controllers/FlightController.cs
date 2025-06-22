@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Net.Http.Headers;
 
 namespace ProjectD
 {
@@ -23,6 +24,12 @@ namespace ProjectD
         [HttpGet("{id}")]
         public async Task<ActionResult<Flight>> GetFlightById(int id)
         {
+            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromSeconds(60)
+            };
+            Response.Headers["Vary"] = new string[] { "Accept-Encoding" };
             Console.WriteLine("[DEBUG] Flight ID received: " + id);
 
             var flight = await _context.Flights.FirstOrDefaultAsync(f => f.Id == id);
@@ -62,6 +69,12 @@ namespace ProjectD
         [FromQuery] string? country, 
         [FromQuery] int page = 1)
         {
+            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromSeconds(60)
+            };
+            Response.Headers["Vary"] = new string[] { "Accept-Encoding" };
             const int pageSize = 100;
 
             if (page < 1) page = 1;
