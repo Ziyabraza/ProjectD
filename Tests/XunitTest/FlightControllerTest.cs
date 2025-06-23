@@ -231,6 +231,10 @@ namespace ProjectD
             // Arrange
             var context = GetDbContext(Guid.NewGuid().ToString(), aantalVluchten: 1);
             var controller = new FlightController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
 
             // Act
             var result = await controller.GetFlightById(1);
@@ -250,6 +254,10 @@ namespace ProjectD
         {
             var context = GetDbContext(Guid.NewGuid().ToString(), aantalVluchten: 1);
             var controller = new FlightController(context);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
 
             var result = await controller.GetFlightById(999);
             Console.WriteLine("API call completed for missing ID.");

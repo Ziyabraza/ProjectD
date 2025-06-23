@@ -53,7 +53,7 @@ namespace ProjectD
 
             if (touchpoints.Length == 0)
             {
-                return NotFound(new Error(404, Request.Path, "An error acured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence."));
+                return NotFound(new Error(404, Request.Path, "An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence."));
             }
 
             return Ok(new PageManager(page, totalPages, touchpoints));
@@ -87,7 +87,7 @@ namespace ProjectD
             }
             if (touchpoints == null || touchpoints.Length == 0)
             {
-                return NotFound(new Error(404, Request.Path, "An error acured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence."));
+                return NotFound(new Error(404, Request.Path, "An error occured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence."));
             }
             if (results == null || results.Count == 0)
             {
