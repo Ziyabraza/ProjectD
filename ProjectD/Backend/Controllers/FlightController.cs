@@ -21,6 +21,30 @@ namespace ProjectD
             _context = context;
         }
 
+        [Authorize(Roles = "User, Admin")]
+        [HttpGet("{id}")]
+        [ResponseCache(Duration = 60)]
+        public async Task<ActionResult<Flight>> GetFlightById(int id)
+        {
+            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
+            {
+                Private = true,
+                MaxAge = TimeSpan.FromSeconds(60)
+            };
+            Response.Headers["Vary"] = "Authorization";
+            Console.WriteLine("[DEBUG] Flight ID received: " + id);
+
+            var flight = await _context.Flights.FirstOrDefaultAsync(f => f.Id == id);
+            if (flight == null)
+            {
+                Console.WriteLine("[DEBUG] Flight not found.");
+                return NotFound(new Error(404, Request?.Path ?? "/unknown", $"Flight with ID {id} not found."));
+            }
+
+            Console.WriteLine("[DEBUG] Flight found: " + flight.Id);
+            return Ok(flight);
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpGet("Flights with IDs and URL")]
         [ResponseCache(Duration = 60)]
