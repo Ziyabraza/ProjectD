@@ -22,6 +22,7 @@ namespace ProjectD
         // Zoek vlucht op basis van een FlightId als string
         [Authorize(Roles = "User, Admin")]
         [HttpGet("{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<ActionResult<Flight>> GetFlightById(int id)
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
@@ -36,7 +37,7 @@ namespace ProjectD
             if (flight == null)
             {
                 Console.WriteLine("[DEBUG] Flight not found.");
-                return NotFound(new Error(404, Request?.Path ?? "/unknown", $"Flight with ID {id} not found." ));
+                return NotFound(new Error(404, Request?.Path ?? "/unknown", $"Flight with ID {id} not found."));
             }
 
             Console.WriteLine("[DEBUG] Flight found: " + flight.Id);
@@ -44,8 +45,15 @@ namespace ProjectD
         }
         [Authorize(Roles = "Admin")]
         [HttpGet("Flights with IDs and URL")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<ActionResult<Dictionary<int, string>>> GetFlightsWithID()
         {
+            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
+            {
+                Private = true,
+                MaxAge = TimeSpan.FromSeconds(60)
+            };
+            Response.Headers["Vary"] = "Authorization";
             var URL = $"{Request.Scheme}://{Request.Host}/api/flight";
             var flightsLinks = await _context.Flights
             .Select(f => new
@@ -56,7 +64,7 @@ namespace ProjectD
                 f => f.Id,
                 f => $"{URL}/{f.Id}"
             );
-            if(!flightsLinks.Any())
+            if (!flightsLinks.Any())
             {
                 return NotFound(new Error(404, Request?.Path ?? "/unknown", "No flights found"));
             }
@@ -64,9 +72,10 @@ namespace ProjectD
         }
         [Authorize(Roles = "User, Admin")]
         [HttpGet("filter")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> FilterFlights(
-        [FromQuery] string? date, 
-        [FromQuery] string? country, 
+        [FromQuery] string? date,
+        [FromQuery] string? country,
         [FromQuery] int page = 1)
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
