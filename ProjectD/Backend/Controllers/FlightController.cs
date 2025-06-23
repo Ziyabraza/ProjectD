@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Net.Http.Headers;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ProjectD
 {
@@ -19,33 +21,9 @@ namespace ProjectD
             _context = context;
         }
 
-        // Zoek vlucht op basis van een FlightId als string
-        [Authorize(Roles = "User, Admin")]
-        [HttpGet("{id}")]
-        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<ActionResult<Flight>> GetFlightById(int id)
-        {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
-            {
-                Private = true,
-                MaxAge = TimeSpan.FromSeconds(60)
-            };
-            Response.Headers["Vary"] = "Authorization";
-            Console.WriteLine("[DEBUG] Flight ID received: " + id);
-
-            var flight = await _context.Flights.FirstOrDefaultAsync(f => f.Id == id);
-            if (flight == null)
-            {
-                Console.WriteLine("[DEBUG] Flight not found.");
-                return NotFound(new Error(404, Request?.Path ?? "/unknown", $"Flight with ID {id} not found."));
-            }
-
-            Console.WriteLine("[DEBUG] Flight found: " + flight.Id);
-            return Ok(flight);
-        }
         [Authorize(Roles = "Admin")]
         [HttpGet("Flights with IDs and URL")]
-        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        [ResponseCache(Duration = 60)]
         public async Task<ActionResult<Dictionary<int, string>>> GetFlightsWithID()
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
@@ -54,29 +32,32 @@ namespace ProjectD
                 MaxAge = TimeSpan.FromSeconds(60)
             };
             Response.Headers["Vary"] = "Authorization";
+
             var URL = $"{Request.Scheme}://{Request.Host}/api/flight";
+
             var flightsLinks = await _context.Flights
-            .Select(f => new
-            {
-                f.Id
-            })
-            .ToDictionaryAsync(
-                f => f.Id,
-                f => $"{URL}/{f.Id}"
-            );
+                .Select(f => new { f.Id })
+                .ToDictionaryAsync(
+                    f => f.Id,
+                    f => $"{URL}/{f.Id}"
+                );
+
             if (!flightsLinks.Any())
             {
                 return NotFound(new Error(404, Request?.Path ?? "/unknown", "No flights found"));
             }
+
             return Ok(flightsLinks);
         }
+
         [Authorize(Roles = "User, Admin")]
         [HttpGet("filter")]
-        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        [ResponseCache(Duration = 60)]
         public async Task<IActionResult> FilterFlights(
-        [FromQuery] string? date,
-        [FromQuery] string? country,
-        [FromQuery] int page = 1)
+            [FromQuery] int? id,
+            [FromQuery] string? date,
+            [FromQuery] string? country,
+            [FromQuery] int page = 1)
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
             {
@@ -84,18 +65,22 @@ namespace ProjectD
                 MaxAge = TimeSpan.FromSeconds(60)
             };
             Response.Headers["Vary"] = "Authorization";
-            const int pageSize = 100;
 
+            const int pageSize = 100;
             if (page < 1) page = 1;
 
             var query = _context.Flights.AsQueryable();
+
+            if (id.HasValue)
+            {
+                query = query.Where(f => f.Id == id.Value);
+            }
 
             if (!string.IsNullOrEmpty(date))
             {
                 if (DateTime.TryParse(date, out DateTime parsedDate))
                 {
                     parsedDate = DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
-
                     query = query.Where(f => f.ScheduledLocal.Date == parsedDate.Date);
                 }
                 else
