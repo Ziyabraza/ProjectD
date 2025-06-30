@@ -21,10 +21,7 @@ namespace ProjectD
             _context = context;
         }
 
-        [Authorize(Roles = "User, Admin")]
-        [HttpGet("{id}")]
-        [ResponseCache(Duration = 60)]
-        public async Task<ActionResult<Flight>> GetFlightById(int id)
+        private void CacheRequest()
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
             {
@@ -32,6 +29,13 @@ namespace ProjectD
                 MaxAge = TimeSpan.FromSeconds(60)
             };
             Response.Headers["Vary"] = "Authorization";
+        }
+
+        [Authorize(Roles = "User, Admin")]
+        [HttpGet("{id}")]
+        [ResponseCache(Duration = 60)]
+        public async Task<ActionResult<Flight>> GetFlightById(int id)
+        {
             Console.WriteLine("[DEBUG] Flight ID received: " + id);
 
             var flight = await _context.Flights.FirstOrDefaultAsync(f => f.Id == id);
@@ -42,6 +46,7 @@ namespace ProjectD
             }
 
             Console.WriteLine("[DEBUG] Flight found: " + flight.Id);
+            CacheRequest();
             return Ok(flight);
         }
 
@@ -50,13 +55,6 @@ namespace ProjectD
         [ResponseCache(Duration = 60)]
         public async Task<ActionResult<Dictionary<int, string>>> GetFlightsWithID()
         {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
-            {
-                Private = true,
-                MaxAge = TimeSpan.FromSeconds(60)
-            };
-            Response.Headers["Vary"] = "Authorization";
-
             var URL = $"{Request.Scheme}://{Request.Host}/api/flight";
 
             var flightsLinks = await _context.Flights
@@ -70,7 +68,7 @@ namespace ProjectD
             {
                 return NotFound(new Error(404, Request?.Path ?? "/unknown", "No flights found"));
             }
-
+            CacheRequest();
             return Ok(flightsLinks);
         }
 
@@ -83,13 +81,6 @@ namespace ProjectD
             [FromQuery] string? country,
             [FromQuery] int page = 1)
         {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
-            {
-                Private = true,
-                MaxAge = TimeSpan.FromSeconds(60)
-            };
-            Response.Headers["Vary"] = "Authorization";
-
             const int pageSize = 100;
             if (page < 1) page = 1;
 
@@ -135,7 +126,7 @@ namespace ProjectD
                     message = "No flights found for the given criteria."
                 });
             }
-
+            CacheRequest();
             return Ok(new
             {
                 page,
