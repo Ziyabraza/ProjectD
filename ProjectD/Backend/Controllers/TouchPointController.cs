@@ -12,6 +12,15 @@ namespace ProjectD
     [Authorize]
     public class TouchpointController : ControllerBase
     {
+        private void CacheRequest()
+        {
+            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
+            {
+                Private = true,
+                MaxAge = TimeSpan.FromSeconds(60)
+            };
+            Response.Headers["Vary"] = "Authorization";
+        }
         private readonly FlightDBContext _context; // Your DbContext
 
         public TouchpointController(FlightDBContext context)
@@ -24,12 +33,6 @@ namespace ProjectD
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetPage1(int page)
         {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
-            {
-                Private = true,
-                MaxAge = TimeSpan.FromSeconds(60)
-            };
-            Response.Headers["Vary"] = "Authorization";
             if (page < 1)
             {
                 new Error(302, Request.Path, "Page number must be greater than 0.");
@@ -55,7 +58,7 @@ namespace ProjectD
             {
                 return NotFound(new Error(404, Request.Path, "An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence."));
             }
-
+            CacheRequest();
             return Ok(new PageManager(page, totalPages, touchpoints));
         }
 
@@ -65,12 +68,6 @@ namespace ProjectD
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetByID(int id)
         {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
-            {
-                Private = true,
-                MaxAge = TimeSpan.FromSeconds(60)
-            };
-            Response.Headers["Vary"] = "Authorization";
             bool found = false;
             // string message = "Match(es) found:\n\n";
             List<Touchpoint> results = new();
@@ -93,6 +90,7 @@ namespace ProjectD
             {
                 return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}."));
             }
+            CacheRequest();
             return Ok(results);
         }
     }
