@@ -61,7 +61,7 @@ public class Error
     {
         try
         {
-        string path = @$"Backend\Data\ErrorLogs\{date:yyyy-MM-dd}.json";
+        string path = @$"Backend\Data\ErrorLogs\{date:dd-MM-yyyy}.json";
         var errorJToken = JToken.FromObject(this);
 
         JArray logArray = new JArray();
