@@ -6,6 +6,7 @@ using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.Options;
 using Serilog.Sinks.PostgreSQL.ColumnWriters;
 using NpgsqlTypes;
+using Newtonsoft.Json.Linq;
 
 public class Error
 {
@@ -36,7 +37,7 @@ public class Error
         Message = message == null ? "An error occurred." : message;
         Url = url;
         Date = DateTime.Now;
-        //LogError(Date);
+        // LogError(Date);
         LogSerilog();
     }
     private void LogSerilog()
@@ -60,37 +61,23 @@ public class Error
     {
         try
         {
-            // Serialize the error object to JSON with indentation
-            string errorJson = JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+        string path = @$"Backend\Data\ErrorLogs\{date:yyyy-MM-dd}.json";
+        var errorJToken = JToken.FromObject(this);
 
-            // DateTime date = DateTime.Now; 
-            DateOnly dateOnly = new DateOnly(date.Year, date.Month, date.Day);
-            string path = @$"Backend\Data\ErrorLogs\{dateOnly}.json";
+        JArray logArray = new JArray();
 
-            if (File.Exists(path) && new FileInfo(path).Length > 0)
-            {
-                // If the file exists, read the existing content (remove the closing bracket) and append the new error
-                string existingJson = File.ReadAllText(path);
-                existingJson = existingJson.TrimEnd(']'); // Remove the closing bracket
-                existingJson += $",{Environment.NewLine}{errorJson}"; // Add the new error with a comma
-                existingJson += Environment.NewLine + "]"; // Close the JSON array
+        if (File.Exists(path) && new FileInfo(path).Length > 0)
+        {
+            var existingContent = File.ReadAllText(path);
+            logArray = JArray.Parse(existingContent);
+        }
 
-                // Write the updated content back to the file
-                File.WriteAllText(path, existingJson);
-            }
-            else
-            {
-                // If the file does not exist or is empty, start a new JSON array and add the first error
-                string jsonArray = "[" + Environment.NewLine + errorJson + Environment.NewLine + "]";
-                File.WriteAllText(path, jsonArray);
-            }
+        logArray.Add(errorJToken);
+
+        File.WriteAllText(path, logArray.ToString(Formatting.Indented));
         }
         catch (Exception ex)
         {
-            // Handle any exceptions that occur during logging
             Console.WriteLine($"Error logging to file: {ex.Message}");
         }
     }
