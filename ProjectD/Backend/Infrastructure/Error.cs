@@ -61,20 +61,20 @@ public class Error
     {
         try
         {
-        string path = @$"Backend\Data\ErrorLogs\{date:dd-MM-yyyy}.json";
-        var errorJToken = JToken.FromObject(this);
+            string path = @$"Backend\Data\ErrorLogs\{date:dd-MM-yyyy}.json";
+            var errorJToken = JToken.FromObject(this);
 
-        JArray logArray = new JArray();
+            JArray logArray = new JArray();
 
-        if (File.Exists(path) && new FileInfo(path).Length > 0)
-        {
-            var existingContent = File.ReadAllText(path);
-            logArray = JArray.Parse(existingContent);
-        }
+            if (File.Exists(path) && new FileInfo(path).Length > 0)
+            {
+                var existingContent = File.ReadAllText(path);
+                logArray = JArray.Parse(existingContent);
+            }
 
-        logArray.Add(errorJToken);
+            logArray.Add(errorJToken);
 
-        File.WriteAllText(path, logArray.ToString(Formatting.Indented));
+            File.WriteAllText(path, logArray.ToString(Formatting.Indented));
         }
         catch (Exception ex)
         {
