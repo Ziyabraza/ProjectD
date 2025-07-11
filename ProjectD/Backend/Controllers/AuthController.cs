@@ -33,7 +33,7 @@ namespace ProjectD
                 u.Username == request.Username && u.Password == request.Password);
 
             if (user == null)
-                new Error(302, Request.Path, "Invalid username or password.");
+                return NotFound(new Error(302, Request.Path, "User not Found. Invalid username or password."));
 
             
             var key = Encoding.UTF8.GetBytes("!!H0g3ScH00LR0tt3RdAm@2025-04-22??");
@@ -70,7 +70,7 @@ namespace ProjectD
 
             if (users.Any(u => u.Username == request.Username))
             {
-                new Error(302, Request.Path, "Username already exists.");
+                return NotFound(new Error(404, Request.Path, "Username already exists."));
             }
 
             var newUser = new User
