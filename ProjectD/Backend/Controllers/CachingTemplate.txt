@@ -19,8 +19,11 @@ if (userId == "anonymous")
 {
     return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource."));
 }
-if (_cache.TryGetValue(cacheKey, out PageManager cachedResult))
+if (_cache.TryGetValue(cacheKey, out [ObjectType] cachedResult)) // try Ok() with ObjectType of matching type
 {
     return Ok(cachedResult);
 }
-
+if (_cache.TryGetValue(cacheKey, out Error cachedResult)) // try NotFound() recomended to also cache when searching in DataBase
+{
+    return NotFound(cachedResult);
+}
