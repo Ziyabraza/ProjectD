@@ -157,7 +157,7 @@ namespace ProjectD
         }
 
         [Fact]
-        public async Task GetPage1_OkResult()
+        public async Task GetByPage_OkResult()
         {
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context);
@@ -166,12 +166,12 @@ namespace ProjectD
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
             };
 
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             var OkResult = Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
-        public async Task GetPage1_Returns_Ok_For_Valid_Page()
+        public async Task GetByPage_Returns_Ok_For_Valid_Page()
         {
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context);
@@ -180,11 +180,11 @@ namespace ProjectD
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
             }; 
             
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
         }
         [Fact]
-        public async Task GetPage1_Returns_PageManager()
+        public async Task GetByPage_Returns_PageManager()
         {
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context);
@@ -193,12 +193,12 @@ namespace ProjectD
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
             };
 
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
             var message = Assert.IsType<PageManager>(okResult.Value);
         }
         [Fact]
-        public async Task GetPage1_Returns_NotNullMessage()
+        public async Task GetByPage_Returns_NotNullMessage()
         {
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context);
@@ -207,14 +207,14 @@ namespace ProjectD
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
             };
 
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
             var message = Assert.IsType<PageManager>(okResult.Value);
 
             Assert.False(message == null); // checks if message is null
         }
         [Fact]
-        public async Task GetPage1_Returns_NoNullTouchpoints()
+        public async Task GetByPage_Returns_NoNullTouchpoints()
         {
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context);
@@ -223,7 +223,7 @@ namespace ProjectD
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
             };
 
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
             var message = Assert.IsType<PageManager>(okResult.Value);
 
@@ -241,7 +241,7 @@ namespace ProjectD
             */
         }
         [Fact]
-        public async Task GetPage1_Returns_Message()
+        public async Task GetByPage_Returns_Message()
         {
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context);
@@ -250,7 +250,7 @@ namespace ProjectD
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
             };
 
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
             var message = Assert.IsType<PageManager>(okResult.Value);
 
@@ -263,7 +263,7 @@ namespace ProjectD
 
 
         [Fact]
-        public async Task GetPage1_Returns_Redirect()
+        public async Task GetByPage_Returns_Redirect()
         {
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context);
@@ -276,13 +276,13 @@ namespace ProjectD
                 HttpContext = httpContext
             };
 
-            var result = await controller.GetPage1(2);
+            var result = await controller.GetByPage(2);
             var okResult = Assert.IsType<RedirectResult>(result);
             Assert.Equal("1", okResult.Url); // Redirect URL result
         }
 
         [Fact]
-        public async Task GetPage1_Returns_NotFound_When_Empty_Database()
+        public async Task GetByPage_Returns_NotFound_When_Empty_Database()
         {
             // Arrange
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
@@ -296,7 +296,7 @@ namespace ProjectD
                 HttpContext = httpContext
             };
 
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var error = Assert.IsType<Error>(notFoundResult.Value); // check if NotFoundObjectResult has an Error object
@@ -310,7 +310,7 @@ namespace ProjectD
         }
 
         [Fact]
-        public async Task GetPage1_Returns_NotFound_When_Empty_Database_Status()
+        public async Task GetByPage_Returns_NotFound_When_Empty_Database_Status()
         {
             // Arrange
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
@@ -324,7 +324,7 @@ namespace ProjectD
                 HttpContext = httpContext
             };
 
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var error = Assert.IsType<Error>(notFoundResult.Value); // check if NotFoundObjectResult has an Error object
@@ -333,7 +333,7 @@ namespace ProjectD
         }
 
         [Fact]
-        public async Task GetPage1_Returns_NotFound_When_Empty_Database_Url()
+        public async Task GetByPage_Returns_NotFound_When_Empty_Database_Url()
         {
             // Arrange
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
@@ -347,7 +347,7 @@ namespace ProjectD
                 HttpContext = httpContext
             };
 
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var error = Assert.IsType<Error>(notFoundResult.Value); // check if NotFoundObjectResult has an Error object
@@ -357,7 +357,7 @@ namespace ProjectD
         }
 
         [Fact]
-        public async Task GetPage1_Returns_NotFound_When_Empty_Database_Detail()
+        public async Task GetByPage_Returns_NotFound_When_Empty_Database_Detail()
         {
             // Arrange
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
@@ -371,7 +371,7 @@ namespace ProjectD
                 HttpContext = httpContext
             };
 
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var error = Assert.IsType<Error>(notFoundResult.Value); // check if NotFoundObjectResult has an Error object
@@ -384,7 +384,7 @@ namespace ProjectD
             // Assert.Equal("An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
         }
         [Fact]
-        public async Task GetPage1_Returns_NotFound_When_Empty_Database_Message_NotDeffault()
+        public async Task GetByPage_Returns_NotFound_When_Empty_Database_Message_NotDeffault()
         {
             // Arrange
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
@@ -398,7 +398,7 @@ namespace ProjectD
                 HttpContext = httpContext
             };
 
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var error = Assert.IsType<Error>(notFoundResult.Value); // check if NotFoundObjectResult has an Error object
@@ -406,7 +406,7 @@ namespace ProjectD
             Assert.NotEqual(ErrorTest.ErrorDefaultMessage(), error.Message); // check if default message is NOT used.
         }
         [Fact]
-        public async Task GetPage1_Returns_NotFound_When_Empty_Database_CorrectMessage()
+        public async Task GetByPage_Returns_NotFound_When_Empty_Database_CorrectMessage()
         {
             // Arrange
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
@@ -420,7 +420,7 @@ namespace ProjectD
                 HttpContext = httpContext
             };
 
-            var result = await controller.GetPage1(1);
+            var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var error = Assert.IsType<Error>(notFoundResult.Value); // check if NotFoundObjectResult has an Error object

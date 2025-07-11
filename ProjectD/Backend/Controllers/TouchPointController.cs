@@ -22,7 +22,7 @@ namespace ProjectD
         [Authorize(Roles = "User, Admin")]
         [HttpGet("page/{page}")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetPage1(int page)
+        public async Task<IActionResult> GetByPage(int page)
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
             {
