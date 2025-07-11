@@ -77,15 +77,19 @@ namespace ProjectD
         {
             // try to extract out of server sided cache
             string userId = User == null ? "anonymous" : "autorized";
-            string cacheKey = $"user:{userId}:touchpoints:id:{id}";
+            string cacheKey = $"user:{userId}:touchpoints:SearchByFlightID:{id}";
             if (userId == "anonymous")
             {
                 // gebruiker is niet ingeloged
                 return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource.")); 
             }
-            if (_cache.TryGetValue(cacheKey, out PageManager cachedResult))
+            if (_cache.TryGetValue(cacheKey, out List<Touchpoint> cachedResult)) // try List<Touchpoint result
             {
                 return Ok(cachedResult);
+            }
+            if (_cache.TryGetValue(cacheKey, out Error cachedresult)) // try Error result
+            {
+                return NotFound(cachedresult);
             }
             bool found = false;
             // string message = "Match(es) found:\n\n";
@@ -102,13 +106,16 @@ namespace ProjectD
             }
             if (touchpoints == null || touchpoints.Length == 0)
             {
-                return NotFound(new Error(404, Request.Path, "An error occured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence."));
+                return NotFound();
             }
             if (results == null || results.Count == 0)
             {
-                return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}."));
+                Error error = new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}.");
+                _cache.Set(cacheKey, error, TimeSpan.FromSeconds(300));
+                return NotFound(error);
             }
 
+            _cache.Set(cacheKey, results, TimeSpan.FromSeconds(300));
             return Ok(results);
         }
     }
