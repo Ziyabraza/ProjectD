@@ -184,7 +184,7 @@ namespace ProjectD
             var okResult = Assert.IsType<OkObjectResult>(result);
         }
         [Fact]
-        public async Task GetByPage_Returns_PageManager()
+        public async Task GetByPage_Returns_PageManagerTouchpoints()
         {
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context);
@@ -195,7 +195,7 @@ namespace ProjectD
 
             var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var message = Assert.IsType<PageManager>(okResult.Value);
+            var message = Assert.IsType<PageManagerTouchpoints>(okResult.Value);
         }
         [Fact]
         public async Task GetByPage_Returns_NotNullMessage()
@@ -209,7 +209,7 @@ namespace ProjectD
 
             var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var message = Assert.IsType<PageManager>(okResult.Value);
+            var message = Assert.IsType<PageManagerTouchpoints>(okResult.Value);
 
             Assert.False(message == null); // checks if message is null
         }
@@ -225,7 +225,7 @@ namespace ProjectD
 
             var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var message = Assert.IsType<PageManager>(okResult.Value);
+            var message = Assert.IsType<PageManagerTouchpoints>(okResult.Value);
 
             Assert.False(message.Touchpoints?.Any(x => x == null)); // Checks if it does NOT contain any null's
                                                                     // example:
@@ -252,7 +252,7 @@ namespace ProjectD
 
             var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var message = Assert.IsType<PageManager>(okResult.Value);
+            var message = Assert.IsType<PageManagerTouchpoints>(okResult.Value);
 
             Assert.False(message == null); // checks if message is null
             Assert.False(message.Touchpoints?.Any(x => x == null)); // Checks if it does NOT contain any null's
