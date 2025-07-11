@@ -1,0 +1,26 @@
+private readonly FlightDBContext _context; // Your DbContext
+private readonly IMemoryCache _cache;
+// add IMemoryCache in controller class declaration
+public TouchpointController(FlightDBContext context, IMemoryCache cache)
+{
+    _context = context;
+    _cache = cache;
+}
+
+string userId = User == null ? "anonymous" : "autorized"; // If user is detected is autorized so cache can be shared.
+
+// example cachekey:
+// [HttpGet("page/{page}")] = :page:{page}
+// $"user:{userId}:[ControllerName]:page:{page}"; 
+
+string cacheKey = $"user:{userId}:[ControllerName]+[HttpGet]";  
+
+if (userId == "anonymous")
+{
+    return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource."));
+}
+if (_cache.TryGetValue(cacheKey, out PageManager cachedResult))
+{
+    return Ok(cachedResult);
+}
+

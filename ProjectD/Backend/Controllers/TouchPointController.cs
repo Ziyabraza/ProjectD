@@ -33,7 +33,7 @@ namespace ProjectD
                 return Redirect("1");
             }
             
-            string userId = User.Identity.Name ?? "anonymous";
+            string userId = User == null ? "anonymous" : "autorized";
             string cacheKey = $"user:{userId}:touchpoints:page:{page}";
             if (userId == "anonymous")
             {
@@ -75,12 +75,18 @@ namespace ProjectD
         [HttpGet("SearchByFlightID/{id}")]
         public async Task<IActionResult> GetByID(int id)
         {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
+            // try to extract out of server sided cache
+            string userId = User == null ? "anonymous" : "autorized";
+            string cacheKey = $"user:{userId}:touchpoints:id:{id}";
+            if (userId == "anonymous")
             {
-                Private = true,
-                MaxAge = TimeSpan.FromSeconds(60)
-            };
-            Response.Headers["Vary"] = "Authorization";
+                // gebruiker is niet ingeloged
+                return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource.")); 
+            }
+            if (_cache.TryGetValue(cacheKey, out PageManager cachedResult))
+            {
+                return Ok(cachedResult);
+            }
             bool found = false;
             // string message = "Match(es) found:\n\n";
             List<Touchpoint> results = new();
@@ -90,7 +96,6 @@ namespace ProjectD
             {
                 if (touchpoint.FlightId == id)
                 {
-
                     // found = true;
                     results.Add(touchpoint);
                 }
