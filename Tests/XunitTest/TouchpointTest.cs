@@ -8,7 +8,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace ProjectD
 {
-    
+
     public class TouchpointTest
     {
         // when no message is given it will give default message
@@ -116,7 +116,7 @@ namespace ProjectD
             DateTime now = DateTime.Now;
 
             // testing with Minutes and Hour only do to miliseconds diffrences
-            Assert.Equal(now.Hour, list[0].TouchpointTime.Hour); 
+            Assert.Equal(now.Hour, list[0].TouchpointTime.Hour);
             Assert.Equal(now.Minute, list[0].TouchpointTime.Minute);
         }
 
@@ -195,8 +195,8 @@ namespace ProjectD
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            }; 
-            
+            };
+
             var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
         }
@@ -238,7 +238,7 @@ namespace ProjectD
         public async Task GetByPage_Returns_NoNullTouchpoints()
         {
             var options = new MemoryCacheOptions();
-            var memoryCache = new MemoryCache(options); 
+            var memoryCache = new MemoryCache(options);
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
@@ -267,7 +267,7 @@ namespace ProjectD
         public async Task GetByPage_Returns_Message()
         {
             var options = new MemoryCacheOptions();
-            var memoryCache = new MemoryCache(options); 
+            var memoryCache = new MemoryCache(options);
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
@@ -291,7 +291,7 @@ namespace ProjectD
         public async Task GetByPage_Returns_Redirect()
         {
             var options = new MemoryCacheOptions();
-            var memoryCache = new MemoryCache(options); 
+            var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context, memoryCache);
 
@@ -343,10 +343,10 @@ namespace ProjectD
         {
             // Arrange
             var options = new MemoryCacheOptions();
-            var memoryCache = new MemoryCache(options); 
+            var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
             TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
-            
+
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Path = "/api/page/1"; // Set desired path
@@ -369,7 +369,7 @@ namespace ProjectD
         {
             // Arrange
             var options = new MemoryCacheOptions();
-            var memoryCache = new MemoryCache(options); 
+            var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
             TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
 
@@ -395,7 +395,7 @@ namespace ProjectD
         {
             // Arrange
             var options = new MemoryCacheOptions();
-            var memoryCache = new MemoryCache(options); 
+            var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
             TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
 
@@ -424,7 +424,7 @@ namespace ProjectD
         {
             // Arrange
             var options = new MemoryCacheOptions();
-            var memoryCache = new MemoryCache(options); 
+            var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
             TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
 
@@ -466,6 +466,92 @@ namespace ProjectD
             var error = Assert.IsType<Error>(notFoundResult.Value); // check if NotFoundObjectResult has an Error object
 
             Assert.Equal("An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
+        }
+        
+        [Fact]
+        public async Task GetByID_Returns_From_Cache_When_Available()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var controller = new TouchpointController(context, cache);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
+
+            string cacheKey = "user:autorized:touchpoints:SearchByFlightID:1001";
+
+            // Simulate data in cache
+            var expected = new List<Touchpoint> { new Touchpoint { Id = 99, FlightId = 1001 } };
+            cache.Set(cacheKey, expected);
+
+            // Act
+            var result = await controller.GetByID(1001);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var data = Assert.IsAssignableFrom<List<Touchpoint>>(okResult.Value);
+            Assert.Equal(99, data[0].Id); // From cache, not DB
+        }
+
+        [Fact]
+        public async Task GetByID_Caches_And_Returns_Data_When_Not_In_Cache()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var controller = new TouchpointController(context, cache);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
+
+            string cacheKey = "user:autorized:touchpoints:SearchByFlightID:200";
+
+            // Ensure cache is empty
+            Assert.False(cache.TryGetValue(cacheKey, out _));
+
+            // Act
+            var result = await controller.GetByID(200);
+
+            // Assert result is OK and data is returned
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var data = Assert.IsAssignableFrom<List<Touchpoint>>(okResult.Value);
+            Assert.Single(data);
+            Assert.Equal(200, data[0].FlightId);
+
+            // Cache should now contain it
+            Assert.True(cache.TryGetValue(cacheKey, out var cached));
+            var cachedList = Assert.IsAssignableFrom<List<Touchpoint>>(cached);
+            Assert.Equal(200, cachedList[0].FlightId);
+        }
+
+        [Fact]
+        public async Task GetByID_Caches_Error_When_No_Data()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var controller = new TouchpointController(context, cache);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
+            };
+
+            string cacheKey = "user:autorized:touchpoints:SearchByFlightID:9999";
+
+            // Act
+            var result = await controller.GetByID(9999);
+
+            // Assert result is NotFound with Error
+            var notFound = Assert.IsType<NotFoundObjectResult>(result);
+            var error = Assert.IsAssignableFrom<Error>(notFound.Value);
+            Assert.Contains("No touchpoints found", error.Message);
+
+            // Cache should now contain the error
+            Assert.True(cache.TryGetValue(cacheKey, out var cached));
+            Assert.IsType<Error>(cached);
         }
     }
 }
