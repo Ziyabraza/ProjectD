@@ -89,7 +89,7 @@ namespace ProjectD
             {
                 Error error = new Error(404, Request?.Path ?? "/unknown", "No flights found");
                 _cache.Set(cacheKey, error, TimeSpan.FromSeconds(300));
-                return NotFound();
+                return NotFound(error);
             }
             _cache.Set(cacheKey, flightsLinks, TimeSpan.FromSeconds(300));
             return Ok(flightsLinks);

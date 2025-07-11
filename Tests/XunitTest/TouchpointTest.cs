@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ProjectD
 {
@@ -41,8 +42,10 @@ namespace ProjectD
         [Fact]
         public async Task GetByID_Returns_Ok_When_FlightId_Matches_CheckSingle()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
-            var controller = new TouchpointController(context);
+            var controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -58,8 +61,10 @@ namespace ProjectD
         [Fact]
         public async Task GetByID_Returns_Ok_When_FlightId_Matches_FlightID()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
-            var controller = new TouchpointController(context);
+            var controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -77,8 +82,10 @@ namespace ProjectD
         [Fact]
         public async Task GetByID_Returns_Ok_When_FlightId_Matches_TouchPointType()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
-            var controller = new TouchpointController(context);
+            var controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -94,8 +101,10 @@ namespace ProjectD
         [Fact]
         public async Task GetByID_Returns_Ok_When_FlightId_Matches_TouchpointTime()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
-            var controller = new TouchpointController(context);
+            var controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -114,8 +123,10 @@ namespace ProjectD
         [Fact]
         public async Task GetByID_Returns_Ok_When_FlightId_Matches_TouchpointPax()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
-            var controller = new TouchpointController(context);
+            var controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -132,11 +143,13 @@ namespace ProjectD
         public async Task GetByID_Returns_NotFound_When_No_Match()
         {
             // Arrange
+            var memoryOptions = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(memoryOptions);
             var options = new DbContextOptionsBuilder<FlightDBContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
             using var emptyContext = new FlightDBContext(options);
-            var controller = new TouchpointController(emptyContext);
+            var controller = new TouchpointController(emptyContext, memoryCache);
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Path = "/SearchByFlightID/2"; // Set desired path
@@ -159,8 +172,10 @@ namespace ProjectD
         [Fact]
         public async Task GetByPage_OkResult()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             FlightDBContext context = GetInMemoryDbContext();
-            TouchpointController controller = new TouchpointController(context);
+            TouchpointController controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -173,8 +188,10 @@ namespace ProjectD
         [Fact]
         public async Task GetByPage_Returns_Ok_For_Valid_Page()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
-            var controller = new TouchpointController(context);
+            var controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -186,8 +203,10 @@ namespace ProjectD
         [Fact]
         public async Task GetByPage_Returns_PageManagerTouchpoints()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             FlightDBContext context = GetInMemoryDbContext();
-            TouchpointController controller = new TouchpointController(context);
+            TouchpointController controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -200,8 +219,10 @@ namespace ProjectD
         [Fact]
         public async Task GetByPage_Returns_NotNullMessage()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             FlightDBContext context = GetInMemoryDbContext();
-            TouchpointController controller = new TouchpointController(context);
+            TouchpointController controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -216,8 +237,10 @@ namespace ProjectD
         [Fact]
         public async Task GetByPage_Returns_NoNullTouchpoints()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options); 
             FlightDBContext context = GetInMemoryDbContext();
-            TouchpointController controller = new TouchpointController(context);
+            TouchpointController controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -243,8 +266,10 @@ namespace ProjectD
         [Fact]
         public async Task GetByPage_Returns_Message()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options); 
             FlightDBContext context = GetInMemoryDbContext();
-            TouchpointController controller = new TouchpointController(context);
+            TouchpointController controller = new TouchpointController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -258,15 +283,17 @@ namespace ProjectD
             Assert.False(message.Touchpoints?.Any(x => x == null)); // Checks if it does NOT contain any null's
             Assert.Equal(1, message.TotalPages); // Check total pages evry 100 touchpoints should have 1 page should only have 1 page
             Assert.Equal(2, message.Touchpoints.Length);
-            Assert.Equal(2, message.TotalTouchpointRecords);
+            Assert.Equal(2, message.TotalRecords);
         }
 
 
         [Fact]
         public async Task GetByPage_Returns_Redirect()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options); 
             var context = GetInMemoryDbContext();
-            var controller = new TouchpointController(context);
+            var controller = new TouchpointController(context, memoryCache);
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Path = "/api/page/2/"; // Set desired path
@@ -285,8 +312,10 @@ namespace ProjectD
         public async Task GetByPage_Returns_NotFound_When_Empty_Database()
         {
             // Arrange
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
-            TouchpointController controller = new TouchpointController(emptyContext);
+            TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Path = "/api/page/1"; // Set desired path
@@ -313,8 +342,11 @@ namespace ProjectD
         public async Task GetByPage_Returns_NotFound_When_Empty_Database_Status()
         {
             // Arrange
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options); 
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
-            TouchpointController controller = new TouchpointController(emptyContext);
+            TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
+            
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Path = "/api/page/1"; // Set desired path
@@ -336,8 +368,10 @@ namespace ProjectD
         public async Task GetByPage_Returns_NotFound_When_Empty_Database_Url()
         {
             // Arrange
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options); 
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
-            TouchpointController controller = new TouchpointController(emptyContext);
+            TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Path = "/api/page/1"; // Set desired path
@@ -360,8 +394,10 @@ namespace ProjectD
         public async Task GetByPage_Returns_NotFound_When_Empty_Database_Detail()
         {
             // Arrange
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options); 
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
-            TouchpointController controller = new TouchpointController(emptyContext);
+            TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Path = "/api/page/1"; // Set desired path
@@ -387,8 +423,10 @@ namespace ProjectD
         public async Task GetByPage_Returns_NotFound_When_Empty_Database_Message_NotDeffault()
         {
             // Arrange
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options); 
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
-            TouchpointController controller = new TouchpointController(emptyContext);
+            TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Path = "/api/page/1"; // Set desired path
@@ -409,8 +447,10 @@ namespace ProjectD
         public async Task GetByPage_Returns_NotFound_When_Empty_Database_CorrectMessage()
         {
             // Arrange
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
-            TouchpointController controller = new TouchpointController(emptyContext);
+            TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Path = "/api/page/1"; // Set desired path

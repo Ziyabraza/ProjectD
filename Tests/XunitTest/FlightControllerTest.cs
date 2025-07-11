@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ProjectD
 {
@@ -210,7 +211,9 @@ namespace ProjectD
 
         private FlightController GetControllerWithMockedRequest(FlightDBContext context)
         {
-            var controller = new FlightController(context);
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var controller = new FlightController(context, memoryCache);
 
             // Mock Request data
             var httpContext = new DefaultHttpContext();
@@ -229,8 +232,10 @@ namespace ProjectD
         public async Task GetFlightById_ReturnsFlight_WhenExists()
         {
             // Arrange
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             var context = GetDbContext(Guid.NewGuid().ToString(), aantalVluchten: 1);
-            var controller = new FlightController(context);
+            var controller = new FlightController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
@@ -252,8 +257,10 @@ namespace ProjectD
         [Fact]
         public async Task GetFlightById_ReturnsNotFound_WhenMissing()
         {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
             var context = GetDbContext(Guid.NewGuid().ToString(), aantalVluchten: 1);
-            var controller = new FlightController(context);
+            var controller = new FlightController(context, memoryCache);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching

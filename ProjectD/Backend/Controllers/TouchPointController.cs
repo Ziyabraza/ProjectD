@@ -106,7 +106,9 @@ namespace ProjectD
             }
             if (touchpoints == null || touchpoints.Length == 0)
             {
-                return NotFound();
+                Error error = new Error(404, Request.Path, "An error occured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.");
+                _cache.Set(cacheKey, error, TimeSpan.FromSeconds(300));
+                return NotFound(error);
             }
             if (results == null || results.Count == 0)
             {
