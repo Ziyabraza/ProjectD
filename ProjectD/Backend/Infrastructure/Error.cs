@@ -37,7 +37,7 @@ public class Error
         Message = message == null ? "An error occurred." : message;
         Url = url;
         Date = DateTime.Now;
-        // LogError(Date);
+        LogError(Date);
         LogSerilog();
     }
     private void LogSerilog()
