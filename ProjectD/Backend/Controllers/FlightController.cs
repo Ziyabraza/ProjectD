@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
+using ProjectD.Models;
 
 namespace ProjectD
 {
@@ -15,50 +17,67 @@ namespace ProjectD
     public class FlightController : ControllerBase
     {
         private readonly FlightDBContext _context;
+        private readonly IMemoryCache _cache;
 
-        public FlightController(FlightDBContext context)
+        public FlightController(FlightDBContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         [Authorize(Roles = "User, Admin")]
         [HttpGet("{id}")]
-        [ResponseCache(Duration = 60)]
         public async Task<ActionResult<Flight>> GetFlightById(int id)
         {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
+            string userId = User == null ? "anonymous" : "autorized";
+            string cacheKey = $"user:{userId}:flights:{id}";
+            if (userId == "anonymous")
             {
-                Private = true,
-                MaxAge = TimeSpan.FromSeconds(60)
-            };
-            Response.Headers["Vary"] = "Authorization";
+                return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource."));
+            }
+            if (_cache.TryGetValue(cacheKey, out Flight? cachedResult))
+            {
+                return Ok(cachedResult);
+            }
+            if (_cache.TryGetValue(cacheKey, out Error cachedError))
+            {
+                return NotFound(cachedError);
+            }
             Console.WriteLine("[DEBUG] Flight ID received: " + id);
 
             var flight = await _context.Flights.FirstOrDefaultAsync(f => f.Id == id);
             if (flight == null)
             {
                 Console.WriteLine("[DEBUG] Flight not found.");
-                return NotFound(new Error(404, Request?.Path ?? "/unknown", $"Flight with ID {id} not found."));
+                Error error = new Error(404, Request?.Path ?? "/unknown", $"Flight with ID {id} not found.");
+                _cache.Set(cacheKey, error, TimeSpan.FromSeconds(300));
+                return NotFound(error);
             }
 
             Console.WriteLine("[DEBUG] Flight found: " + flight.Id);
+            _cache.Set(cacheKey, flight, TimeSpan.FromSeconds(300));
             return Ok(flight);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet("Flights with IDs and URL")]
-        [ResponseCache(Duration = 60)]
         public async Task<ActionResult<Dictionary<int, string>>> GetFlightsWithID()
         {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
-            {
-                Private = true,
-                MaxAge = TimeSpan.FromSeconds(60)
-            };
-            Response.Headers["Vary"] = "Authorization";
-
             var URL = $"{Request.Scheme}://{Request.Host}/api/flight";
-
+            string userId = User == null ? "anonymous" : "autorized";
+            string cacheKey = $"user:{userId}:flights:Flights_with_IDs_and_URL";
+            if (userId == "anonymous")
+            {
+                return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource."));
+            }
+            if (_cache.TryGetValue(cacheKey, out  Dictionary<int, string>? cachedResult))
+            {
+                return Ok(cachedResult);
+            }
+            if (_cache.TryGetValue(cacheKey, out Error cachedError))
+            {
+                return NotFound(cachedError);
+            }
             var flightsLinks = await _context.Flights
                 .Select(f => new { f.Id })
                 .ToDictionaryAsync(
@@ -68,9 +87,11 @@ namespace ProjectD
 
             if (!flightsLinks.Any())
             {
-                return NotFound(new Error(404, Request?.Path ?? "/unknown", "No flights found"));
+                Error error = new Error(404, Request?.Path ?? "/unknown", "No flights found");
+                _cache.Set(cacheKey, error, TimeSpan.FromSeconds(300));
+                return NotFound();
             }
-
+            _cache.Set(cacheKey, flightsLinks, TimeSpan.FromSeconds(300));
             return Ok(flightsLinks);
         }
 
@@ -83,16 +104,29 @@ namespace ProjectD
             [FromQuery] string? country,
             [FromQuery] int page = 1)
         {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
-            {
-                Private = true,
-                MaxAge = TimeSpan.FromSeconds(60)
-            };
-            Response.Headers["Vary"] = "Authorization";
-
             const int pageSize = 100;
             if (page < 1) page = 1;
 
+            var URL = $"{Request.Scheme}://{Request.Host}/api/flight";
+            string userId = User == null ? "anonymous" : "autorized";
+            // cache values in case of nulls
+            string? cv1 = id == null ? "?" : id.ToString();
+            string? cv2 = date == null ? "?" : date;
+            string? cv3 = country == null ? "?" : country;
+            string cacheKey = $"user:{userId}:flights:filter:id:{cv1}:date:{cv2}:country:{cv3}:page:{page}";
+            if (userId == "anonymous")
+            {
+                return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource."));
+            }
+            if (_cache.TryGetValue(cacheKey, out PageManagerFlights cachedResult))
+            {
+                return Ok(cachedResult);
+            }
+            if (_cache.TryGetValue(cacheKey, out Error cachedError))
+            {
+                return NotFound(cachedError);
+            }
+            
             var query = _context.Flights.AsQueryable();
 
             if (id.HasValue)
@@ -109,6 +143,7 @@ namespace ProjectD
                 }
                 else
                 {
+
                     return BadRequest(new { status = 400, message = "Use YYYY-MM-DD." });
                 }
             }
@@ -124,26 +159,18 @@ namespace ProjectD
             var flights = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync();
+                .ToArrayAsync();
 
             if (!flights.Any())
             {
-                return NotFound(new
-                {
-                    status = 404,
-                    path = Request.Path,
-                    message = "No flights found for the given criteria."
-                });
+                Error error = new Error(404, Request.Path, "No flights found for the given criteria.");
+                _cache.Set(cacheKey, error, TimeSpan.FromSeconds(300));
+                return NotFound(error);
             }
 
-            return Ok(new
-            {
-                page,
-                pageSize,
-                totalPages,
-                totalItems,
-                data = flights
-            });
+            PageManagerFlights results = new PageManagerFlights(page, 100, totalItems, flights);
+            _cache.Set(cacheKey, results, TimeSpan.FromSeconds(300));
+            return Ok(results);
         }
     }
 }

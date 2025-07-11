@@ -39,7 +39,7 @@ namespace ProjectD
             {
                 return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource."));
             }
-            if (_cache.TryGetValue(cacheKey, out PageManager cachedResult))
+            if (_cache.TryGetValue(cacheKey, out PageManagerTouchpoints cachedResult))
             {
                 return Ok(cachedResult);
             }
@@ -64,10 +64,10 @@ namespace ProjectD
                 return NotFound(new Error(404, Request.Path, "An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence."));
             }
 
-            PageManager result = new PageManager(page, totalPages, touchpoints);
+            PageManagerTouchpoints result = new PageManagerTouchpoints(page, totalPages, touchpoints);
             _cache.Set(cacheKey, result, TimeSpan.FromSeconds(300));
 
-            return Ok(new PageManager(page, totalPages, touchpoints));
+            return Ok(new PageManagerTouchpoints(page, totalPages, touchpoints));
         }
 
 
@@ -87,9 +87,9 @@ namespace ProjectD
             {
                 return Ok(cachedResult);
             }
-            if (_cache.TryGetValue(cacheKey, out Error cachedresult)) // try Error result
+            if (_cache.TryGetValue(cacheKey, out Error cachedError)) // try Error result
             {
-                return NotFound(cachedresult);
+                return NotFound(cachedError);
             }
             bool found = false;
             // string message = "Match(es) found:\n\n";
