@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using ProjectD.Models;
+using System.Security.Claims;
 
 namespace ProjectD
 {
@@ -210,6 +211,21 @@ namespace ProjectD
             return context;
         }
 
+        private void Login(FlightController controller, string role = "User")
+        {
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                    {
+                        new Claim(ClaimTypes.Name, "TestUser"),
+                        new Claim(ClaimTypes.Role, role)
+                    }, "mock"))
+                }
+            };
+        }
+
         private FlightController GetControllerWithMockedRequest(FlightDBContext context)
         {
             var options = new MemoryCacheOptions();
@@ -237,10 +253,7 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             var context = GetDbContext(Guid.NewGuid().ToString(), aantalVluchten: 1);
             var controller = new FlightController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
 
             // Act
             var result = await controller.GetFlightById(1);
@@ -262,10 +275,7 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             var context = GetDbContext(Guid.NewGuid().ToString(), aantalVluchten: 1);
             var controller = new FlightController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
 
             var result = await controller.GetFlightById(999);
             Console.WriteLine("API call completed for missing ID.");
@@ -283,11 +293,13 @@ namespace ProjectD
 
             var context = GetDbContext(Guid.NewGuid().ToString(), aantalVluchten: 2);
             var controller = GetControllerWithMockedRequest(context);
+            Login(controller);
+            controller.Request.Scheme = "https";
+            controller.Request.Host = new HostString("localhost");
 
             Console.WriteLine("Calling GetFlightsWithID...");
             var result = await controller.GetFlightsWithID();
             Console.WriteLine("Result type: " + result.Result?.GetType().Name);
-
 
 
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -310,6 +322,7 @@ namespace ProjectD
             Console.WriteLine("Running: GetFlightsWithID_ReturnsNotFound_WhenNoFlightsExist");
             var context = GetDbContext(Guid.NewGuid().ToString(), aantalVluchten: 0);
             var controller = GetControllerWithMockedRequest(context);
+            Login(controller);
 
             Console.WriteLine("Calling GetFlightsWithID...");
             var result = await controller.GetFlightsWithID();
@@ -351,18 +364,14 @@ namespace ProjectD
             var context = GetDbContext(Guid.NewGuid().ToString());
 
             var expectedFlight = new Flight { Id = 123, Country = "USA", ScheduledLocal = DateTime.UtcNow };
-            string cacheKey = "user:autorized:flights:123";
+            string cacheKey = "user:authorized:flights:123";
             cache.Set(cacheKey, expectedFlight);
 
             var controller = new FlightController(context, cache);
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Scheme = "https";
-            httpContext.Request.Host = new HostString("localhost");
-
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            };
+            Login(controller);
+            controller.Request.Scheme = "https";
+            controller.Request.Host = new HostString("localhost");
+            
 
             // Act
             var result = await controller.GetFlightById(123);
@@ -381,14 +390,7 @@ namespace ProjectD
             var context = GetDbContext(Guid.NewGuid().ToString());
 
             var controller = new FlightController(context, cache);
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Scheme = "https";
-            httpContext.Request.Host = new HostString("localhost");
-
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            };
+            Login(controller);
 
             // Act
             var result = await controller.GetFlightById(1);
@@ -399,7 +401,7 @@ namespace ProjectD
             Assert.Equal(1, flight.Id);
 
             // Check if cached
-            Assert.True(cache.TryGetValue("user:autorized:flights:1", out Flight _));
+            Assert.True(cache.TryGetValue("user:authorized:flights:1", out Flight _));
         }
 
         [Fact]
@@ -407,21 +409,15 @@ namespace ProjectD
         {
             // Arrange
             var cache = new MemoryCache(new MemoryCacheOptions());
-            var context = GetDbContext("flightsDb");
+            var context = GetDbContext(Guid.NewGuid().ToString());
+
 
             var error = new Error(404, "/api/flight/404", "Not found");
-            string cacheKey = "user:autorized:flights:404";
+            string cacheKey = "user:authorized:flights:404";
             cache.Set(cacheKey, error);
 
             var controller = new FlightController(context, cache);
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Scheme = "https";
-            httpContext.Request.Host = new HostString("localhost");
-
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            };
+            Login(controller);
 
             // Act
             var result = await controller.GetFlightById(404);
@@ -439,13 +435,8 @@ namespace ProjectD
             var context = GetDbContext(Guid.NewGuid().ToString()); // bevat mockdata (bijv. 1 vlucht)
 
             var controller = new FlightController(context, cache);
-
-            var httpContext = new DefaultHttpContext();
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext
-            };
-
+            Login(controller);
+            
             // Act
             var result = await controller.FilterFlights(null, null, null); // geen filters, dus alle vluchten
 
@@ -454,7 +445,7 @@ namespace ProjectD
             var page = Assert.IsType<PageManagerFlights>(ok.Value);
 
             // Controleren dat cache is gevuld
-            var cacheKey = "user:autorized:flights:filter:id:?:date:?:country:?:page:1";
+            var cacheKey = "user:authorized:flights:filter:id:?:date:?:country:?:page:1";
             Assert.True(cache.TryGetValue(cacheKey, out PageManagerFlights cachedPage));
 
             Assert.Equal(page.Flights.Length, cachedPage.TotalItems);

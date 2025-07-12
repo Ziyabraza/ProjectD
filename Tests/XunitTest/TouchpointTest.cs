@@ -5,6 +5,7 @@ using Moq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Microsoft.Extensions.Caching.Memory;
+using System.Security.Claims;
 
 namespace ProjectD
 {
@@ -39,6 +40,21 @@ namespace ProjectD
             return new FlightDBContext(options);
         }
 
+        private void Login(TouchpointController controller, string role = "User")
+        {
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                    {
+                        new Claim(ClaimTypes.Name, "TestUser"),
+                        new Claim(ClaimTypes.Role, role)
+                    }, "mock"))
+                }
+            };
+        }
+
         [Fact]
         public async Task GetByID_Returns_Ok_When_FlightId_Matches_CheckSingle()
         {
@@ -46,10 +62,7 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
 
             var result = await controller.GetByID(100);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -65,10 +78,7 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
 
 
             var result = await controller.GetByID(100);
@@ -86,10 +96,7 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
 
             var result = await controller.GetByID(100);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -105,10 +112,7 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
 
             var result = await controller.GetByID(100);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -127,10 +131,7 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
 
             var result = await controller.GetByID(100);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -150,14 +151,10 @@ namespace ProjectD
                 .Options;
             using var emptyContext = new FlightDBContext(options);
             var controller = new TouchpointController(emptyContext, memoryCache);
+            Login(controller);
 
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Path = "/SearchByFlightID/2"; // Set desired path
-
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
+            controller.Request.Path = "/SearchByFlightID/2"; // Set desired path
 
             var result = await controller.GetByID(2); // No such ID
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
@@ -176,10 +173,8 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
+
 
             var result = await controller.GetByPage(1);
             var OkResult = Assert.IsType<OkObjectResult>(result);
@@ -192,10 +187,8 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
+
 
             var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -207,11 +200,8 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
-
+            Login(controller);
+            
             var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
             var message = Assert.IsType<PageManagerTouchpoints>(okResult.Value);
@@ -223,10 +213,8 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
+
 
             var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -241,10 +229,8 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
+
 
             var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -270,10 +256,7 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             FlightDBContext context = GetInMemoryDbContext();
             TouchpointController controller = new TouchpointController(context, memoryCache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
 
             var result = await controller.GetByPage(1);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -294,14 +277,10 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             var context = GetInMemoryDbContext();
             var controller = new TouchpointController(context, memoryCache);
-
+            Login(controller);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Path = "/api/page/2/"; // Set desired path
+            controller.Request.Path = "/api/page/2/"; // Set desired path
 
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
 
             var result = await controller.GetByPage(2);
             var okResult = Assert.IsType<RedirectResult>(result);
@@ -316,14 +295,9 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
             TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
-
+            Login(controller);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Path = "/api/page/1"; // Set desired path
-
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
+            controller.Request.Path = "/api/page/1"; // Set desired path
 
             var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
@@ -346,15 +320,8 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
             TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
-
-
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Path = "/api/page/1"; // Set desired path
-
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
+            Login(controller);
+            controller.Request.Path = "/api/page/1"; // Set desired path
 
             var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
@@ -372,14 +339,8 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
             TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
-
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Path = "/api/page/1"; // Set desired path
-
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
+            Login(controller);
+            controller.Request.Path = "/api/page/1"; // Set desired path
 
             var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
@@ -398,14 +359,9 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
             TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
-
+            Login(controller);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Path = "/api/page/1"; // Set desired path
-
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
+            controller.Request.Path = "/api/page/1"; // Set desired path
 
             var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
@@ -427,14 +383,9 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
             TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
-
+            Login(controller);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Path = "/api/page/1"; // Set desired path
-
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
+            controller.Request.Path = "/api/page/1"; // Set desired path
 
             var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
@@ -451,14 +402,9 @@ namespace ProjectD
             var memoryCache = new MemoryCache(options);
             FlightDBContext emptyContext = GetInMemoryDbContextEmpty();
             TouchpointController controller = new TouchpointController(emptyContext, memoryCache);
-
+            Login(controller);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Path = "/api/page/1"; // Set desired path
-
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
+            controller.Request.Path = "/api/page/1"; // Set desired path
 
             var result = await controller.GetByPage(1);
             Assert.IsType<NotFoundObjectResult>(result);
@@ -475,12 +421,10 @@ namespace ProjectD
             var context = GetInMemoryDbContext();
             var cache = new MemoryCache(new MemoryCacheOptions());
             var controller = new TouchpointController(context, cache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
 
-            string cacheKey = "user:autorized:touchpoints:SearchByFlightID:1001";
+
+            string cacheKey = "user:authorized:touchpoints:SearchByFlightID:1001";
 
             // Simulate data in cache
             var expected = new List<Touchpoint> { new Touchpoint { Id = 99, FlightId = 1001 } };
@@ -502,12 +446,9 @@ namespace ProjectD
             var context = GetInMemoryDbContext();
             var cache = new MemoryCache(new MemoryCacheOptions());
             var controller = new TouchpointController(context, cache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
 
-            string cacheKey = "user:autorized:touchpoints:SearchByFlightID:200";
+            string cacheKey = "user:authorized:touchpoints:SearchByFlightID:200";
 
             // Ensure cache is empty
             Assert.False(cache.TryGetValue(cacheKey, out _));
@@ -534,12 +475,9 @@ namespace ProjectD
             var context = GetInMemoryDbContext();
             var cache = new MemoryCache(new MemoryCacheOptions());
             var controller = new TouchpointController(context, cache);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext() // mocks HttpContext for null refrence used in chaching
-            };
+            Login(controller);
 
-            string cacheKey = "user:autorized:touchpoints:SearchByFlightID:9999";
+            string cacheKey = "user:authorized:touchpoints:SearchByFlightID:9999";
 
             // Act
             var result = await controller.GetByID(9999);
@@ -560,13 +498,10 @@ namespace ProjectD
             var context = GetInMemoryDbContext();
             var cache = new MemoryCache(new MemoryCacheOptions());
             var controller = new TouchpointController(context, cache);
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
+            Login(controller);
 
             int testPage = 1;
-            string cacheKey = $"user:autorized:touchpoints:page:{testPage}";
+            string cacheKey = $"user:authorized:touchpoints:page:{testPage}";
 
             var cachedPage = new PageManagerTouchpoints(testPage, 1, new[]
             {

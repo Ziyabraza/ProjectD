@@ -118,21 +118,6 @@ namespace ProjectD
             {
                 File.Delete(path);
             }
-
-            // Error error1 = new Error(statusCode, testUrl, customMessage);
-            // Error error2 = new Error(statusCode, testUrl, customMessage);
-
-            // string fileContent = File.ReadAllText(path);
-            // JArray logs = JArray.Parse(fileContent);
-
-            // Assert.True(logs.Count >= 2); // Should have at least two entries
-
-            // foreach (var log in logs)
-            // {
-            //     Assert.Equal(statusCode, (int)log["statusCode"]);
-            //     Assert.Equal(testUrl, (string)log["url"]);
-            //     Assert.Equal(customMessage, (string)log["message"]);
-            // }
         }
         [Fact]
         public async Task TestErrorLog_JSONFileCreation()
