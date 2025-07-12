@@ -13,6 +13,7 @@ namespace ProjectD
     public class TouchpointTest
     {
         // when no message is given it will give default message
+        private string UnautorizeMessage() => "You must be logged in to access this resource.";
         private FlightDBContext GetInMemoryDbContext()
         {
             var options = new DbContextOptionsBuilder<FlightDBContext>()
@@ -54,7 +55,124 @@ namespace ProjectD
                 }
             };
         }
+        private void LoginAsAnonymous(TouchpointController controller)
+        {
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal() // No identity = anonymous
+                }
+            };
+        }
+        [Fact]
+        public async Task GetByID_Unautorized_Result()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context, memoryCache);
+            LoginAsAnonymous(controller);
 
+            var result = await controller.GetByID(100);
+            Assert.IsType<UnauthorizedObjectResult>(result);
+        }
+        [Fact]
+        public async Task GetByPage_Unautorized_Result()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetByPage(1);
+            Assert.IsType<UnauthorizedObjectResult>(result);
+        }
+        [Fact]
+        public async Task GetByID_Unautorized_Message()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetByID(100);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(UnautorizeMessage(), error.Message);
+        }
+        [Fact]
+        public async Task GetByPage_Unautorized_Message()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetByPage(100);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(UnautorizeMessage(), error.Message);
+        }
+        [Fact]
+        public async Task GetByID_Unautorized_StatusCode()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetByID(100);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(401, error.StatusCode);
+        }
+        [Fact]
+        public async Task GetByPage_Unautorized_StatusCode()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetByPage(1);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(401, error.StatusCode);
+        }
+        [Fact]
+        public async Task GetByPage_Unautorized_Details()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetByPage(1);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(new Error(401, "api/SearchByFlightID/100", "Test Unoutorized").Details, error.Details);
+        }
+        [Fact]
+        public async Task GetByID_Unautorized_Details()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetByID(100);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(new Error(401, "api/Touchpoint/page/1", "Test Unoutorized").Details, error.Details);
+        }
         [Fact]
         public async Task GetByID_Returns_Ok_When_FlightId_Matches_CheckSingle()
         {

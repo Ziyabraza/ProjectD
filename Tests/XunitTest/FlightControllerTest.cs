@@ -15,6 +15,7 @@ namespace ProjectD
 {
     public class FlightControllerTests
     {
+        private string UnautorizeMessage() => "You must be logged in to access this resource.";
         private FlightDBContext GetDbContext(string dbName, int aantalVluchten = 1)
         {
             var options = new DbContextOptionsBuilder<FlightDBContext>()
@@ -225,7 +226,178 @@ namespace ProjectD
                 }
             };
         }
+        private void LoginAsAnonymous(FlightController controller)
+        {
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal() // No identity = anonymous
+                }
+            };
+        }
+        [Fact]
+        public async Task GetFlightById_Unauthorized_Result()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
 
+            var result = await controller.GetFlightById(100);
+            Assert.IsType<UnauthorizedObjectResult>(result.Result);
+        }
+        [Fact]
+        public async Task GetFlightsWithID_Unauthorized_Result()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetFlightsWithID();
+            Assert.IsType<UnauthorizedObjectResult>(result.Result); // ActionResult<Dictionary<int, string>>
+        }
+        [Fact]
+        public async Task FilterFlights_Unauthorized_Result()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.FilterFlights(null, null, null, 1);
+            Assert.IsType<UnauthorizedObjectResult>(result); // IActionResult
+        }
+        [Fact]
+        public async Task GetFlightById_Unautorized_Message()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetFlightById(100);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result.Result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(UnautorizeMessage(), error.Message);
+        }
+        [Fact]
+        public async Task GetFlightsWithID_Unautorized_Message()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetFlightsWithID();
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result.Result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(UnautorizeMessage(), error.Message);
+        }
+        [Fact]
+        public async Task FilterFlights_Unautorized_Message()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.FilterFlights(null, null, null, 1);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(UnautorizeMessage(), error.Message);
+        }
+        [Fact]
+        public async Task GetFlightById_Unautorized_StatusCode()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetFlightById(100);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result.Result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(401, error.StatusCode);
+        }
+        [Fact]
+        public async Task FilterFlights_Unautorized_StatusCode()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.FilterFlights(null, null, null, 1);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(401, error.StatusCode);
+        }
+        [Fact]
+        public async Task GetFlightWithID_Unautorized_StatusCode()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetFlightsWithID();
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result.Result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(401, error.StatusCode);
+        }
+        [Fact]
+        public async Task GetFlightById_Unautorized_Details()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetFlightById(100);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result.Result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(new Error(401, "api/FlightController/100", "Test Unoutorized").Details, error.Details);
+        }
+        [Fact]
+        public async Task GetFlightWithId_Unautorized_Details()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.GetFlightsWithID();
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result.Result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(new Error(401, "api/flight", "Test Unoutorized").Details, error.Details);
+        }
+        [Fact]
+        public async Task FilterFlights_Unautorized_Details()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+
+            var result = await controller.FilterFlights(null, null, null, 1);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(new Error(401, "api/flight", "Test Unoutorized").Details, error.Details);
+        }
         private FlightController GetControllerWithMockedRequest(FlightDBContext context)
         {
             var options = new MemoryCacheOptions();
@@ -285,7 +457,6 @@ namespace ProjectD
             Console.WriteLine("Asserted result is NotFoundObjectResult. ✅ Test SUCCESS.");
 
         }
-
         [Fact]
         public async Task GetFlightsWithID_ReturnsDictionary_WhenFlightsExist()
         {
