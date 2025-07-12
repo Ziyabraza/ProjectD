@@ -15,17 +15,17 @@ public class Program
         var token = StressTest.GetJwtToken();
         Console.WriteLine(token.Result);
 
-        List<string> paths = new();
-        for (int i = 1; i < 1001; i++)
-        {
-            paths.Add($"http://localhost:5165/api/Touchpoint/page/{i}");
-        }
+        // List<string> paths = new();
+        // for (int i = 1; i < 1001; i++)
+        // {
+        //     paths.Add($"http://localhost:5165/api/Touchpoint/page/{i}");
+        // }
             
-
         if (token != null)
         {
-            var scenarios = paths.Select(path => StressTest.RunAll(token.Result.ToString(), path)).ToArray();
+            // var scenarios = paths.Select(path => StressTest.RunAll(token.Result.ToString(), path)).ToArray();
             // StressTest.RunSingle(token.Result.ToString(), paths);
+            var scenarios = StressTest.ChacheTest(token.Result.ToString(), "http://localhost:5165/api/Touchpoint/page/3");
 
             NBomberRunner
                 .RegisterScenarios(scenarios)
@@ -99,6 +99,22 @@ public static class StressTest
                 return Response.Fail(response.StatusCode);
 
         }).WithoutWarmUp();
+    }
+
+    public static NBomber.Contracts.ScenarioProps ChacheTest(string token, string path)
+    {
+        var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        return Scenario.Create("cache-test", async context =>
+        {
+            var response = await httpClient.GetAsync(path);
+
+            return response.IsSuccessStatusCode
+                ? Response.Ok()
+                : Response.Fail(response.StatusCode);
+        })
+        .WithLoadSimulations(Simulation.KeepConstant(copies: 1000, during: TimeSpan.FromSeconds(60)));
     }
 }
 

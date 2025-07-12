@@ -29,7 +29,7 @@ namespace ProjectD
         [HttpGet("{id}")]
         public async Task<ActionResult<Flight>> GetFlightById(int id)
         {
-            string userId = User == null ? "anonymous" : "autorized";
+            string userId = User?.Identity?.IsAuthenticated == true ? "authorized" : "anonymous";
             string cacheKey = $"user:{userId}:flights:{id}";
             if (userId == "anonymous")
             {
@@ -64,7 +64,7 @@ namespace ProjectD
         public async Task<ActionResult<Dictionary<int, string>>> GetFlightsWithID()
         {
             var URL = $"{Request.Scheme}://{Request.Host}/api/flight";
-            string userId = User == null ? "anonymous" : "autorized";
+            string userId = User?.Identity?.IsAuthenticated == true ? "authorized" : "anonymous";
             string cacheKey = $"user:{userId}:flights:Flights_with_IDs_and_URL";
             if (userId == "anonymous")
             {
@@ -108,7 +108,7 @@ namespace ProjectD
             if (page < 1) page = 1;
 
             var URL = $"{Request.Scheme}://{Request.Host}/api/flight";
-            string userId = User == null ? "anonymous" : "autorized";
+            string userId = User?.Identity?.IsAuthenticated == true ? "authorized" : "anonymous";
             // cache values in case of nulls
             string? cv1 = id == null ? "?" : id.ToString();
             string? cv2 = date == null ? "?" : date;

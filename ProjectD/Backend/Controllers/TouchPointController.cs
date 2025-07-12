@@ -33,7 +33,7 @@ namespace ProjectD
                 return Redirect("1");
             }
             
-            string userId = User == null ? "anonymous" : "autorized";
+            string userId = User?.Identity?.IsAuthenticated == true ? "authorized" : "anonymous";
             string cacheKey = $"user:{userId}:touchpoints:page:{page}";
             if (userId == "anonymous")
             {
@@ -76,7 +76,7 @@ namespace ProjectD
         public async Task<IActionResult> GetByID(int id)
         {
             // try to extract out of server sided cache
-            string userId = User == null ? "anonymous" : "autorized";
+            string userId = User?.Identity?.IsAuthenticated == true ? "authorized" : "anonymous";
             string cacheKey = $"user:{userId}:touchpoints:SearchByFlightID:{id}";
             if (userId == "anonymous")
             {
