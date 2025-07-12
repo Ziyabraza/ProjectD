@@ -467,7 +467,7 @@ namespace ProjectD
 
             Assert.Equal("An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
         }
-        
+
         [Fact]
         public async Task GetByID_Returns_From_Cache_When_Available()
         {
@@ -552,6 +552,37 @@ namespace ProjectD
             // Cache should now contain the error
             Assert.True(cache.TryGetValue(cacheKey, out var cached));
             Assert.IsType<Error>(cached);
+        }
+        [Fact]
+        public async Task GetByPage_Returns_From_Cache_When_Available()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var controller = new TouchpointController(context, cache);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            int testPage = 1;
+            string cacheKey = $"user:autorized:touchpoints:page:{testPage}";
+
+            var cachedPage = new PageManagerTouchpoints(testPage, 1, new[]
+            {
+                new Touchpoint { Id = 1, FlightId = 123 }
+            });
+
+            cache.Set(cacheKey, cachedPage);
+
+            // Act
+            var result = await controller.GetByPage(testPage);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var pageResult = Assert.IsAssignableFrom<PageManagerTouchpoints>(okResult.Value);
+            Assert.Equal(1, pageResult.PageNumber);
+            Assert.Single(pageResult.Touchpoints);
         }
     }
 }

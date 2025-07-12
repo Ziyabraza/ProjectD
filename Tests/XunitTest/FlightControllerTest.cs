@@ -347,7 +347,7 @@ namespace ProjectD
     {
         // Arrange
         var cache = new MemoryCache(new MemoryCacheOptions());
-        var context = GetDbContext("flightsDb");
+        var context = GetDbContext(Guid.NewGuid().ToString());
 
         var expectedFlight = new Flight { Id = 123, Country = "USA", ScheduledLocal = DateTime.UtcNow };
         string cacheKey = "user:autorized:flights:123";
@@ -377,7 +377,7 @@ namespace ProjectD
     {
         // Arrange
         var cache = new MemoryCache(new MemoryCacheOptions());
-        var context = GetDbContext("flightsDb");
+        var context = GetDbContext(Guid.NewGuid().ToString());
 
         var controller = new FlightController(context, cache);
         var httpContext = new DefaultHttpContext();
