@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
+using ProjectD.Models;
 
 namespace ProjectD
 {
@@ -341,20 +342,20 @@ namespace ProjectD
             Assert.Equal("Admin", attr.Roles);
             Console.WriteLine("Authorize role is 'Admin'. ✅ Test SUCCESS.");
         }
-        
-         [Fact]
-    public async Task GetFlightById_ReturnsCachedFlight()
-    {
-        // Arrange
-        var cache = new MemoryCache(new MemoryCacheOptions());
-        var context = GetDbContext(Guid.NewGuid().ToString());
 
-        var expectedFlight = new Flight { Id = 123, Country = "USA", ScheduledLocal = DateTime.UtcNow };
-        string cacheKey = "user:autorized:flights:123";
-        cache.Set(cacheKey, expectedFlight);
+        [Fact]
+        public async Task GetFlightById_ReturnsCachedFlight()
+        {
+            // Arrange
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var context = GetDbContext(Guid.NewGuid().ToString());
 
-        var controller = new FlightController(context, cache);
-        var httpContext = new DefaultHttpContext();
+            var expectedFlight = new Flight { Id = 123, Country = "USA", ScheduledLocal = DateTime.UtcNow };
+            string cacheKey = "user:autorized:flights:123";
+            cache.Set(cacheKey, expectedFlight);
+
+            var controller = new FlightController(context, cache);
+            var httpContext = new DefaultHttpContext();
             httpContext.Request.Scheme = "https";
             httpContext.Request.Host = new HostString("localhost");
 
@@ -363,24 +364,24 @@ namespace ProjectD
                 HttpContext = httpContext
             };
 
-        // Act
+            // Act
             var result = await controller.GetFlightById(123);
 
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var flight = Assert.IsType<Flight>(okResult.Value);
-        Assert.Equal(123, flight.Id);
-    }
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var flight = Assert.IsType<Flight>(okResult.Value);
+            Assert.Equal(123, flight.Id);
+        }
 
-    [Fact]
-    public async Task GetFlightById_CachesAndReturnsFlight_WhenNotInCache()
-    {
-        // Arrange
-        var cache = new MemoryCache(new MemoryCacheOptions());
-        var context = GetDbContext(Guid.NewGuid().ToString());
+        [Fact]
+        public async Task GetFlightById_CachesAndReturnsFlight_WhenNotInCache()
+        {
+            // Arrange
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var context = GetDbContext(Guid.NewGuid().ToString());
 
-        var controller = new FlightController(context, cache);
-        var httpContext = new DefaultHttpContext();
+            var controller = new FlightController(context, cache);
+            var httpContext = new DefaultHttpContext();
             httpContext.Request.Scheme = "https";
             httpContext.Request.Host = new HostString("localhost");
 
@@ -389,31 +390,31 @@ namespace ProjectD
                 HttpContext = httpContext
             };
 
-        // Act
+            // Act
             var result = await controller.GetFlightById(1);
 
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var flight = Assert.IsType<Flight>(okResult.Value);
-        Assert.Equal(1, flight.Id);
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var flight = Assert.IsType<Flight>(okResult.Value);
+            Assert.Equal(1, flight.Id);
 
-        // Check if cached
-        Assert.True(cache.TryGetValue("user:autorized:flights:1", out Flight _));
-    }
+            // Check if cached
+            Assert.True(cache.TryGetValue("user:autorized:flights:1", out Flight _));
+        }
 
-    [Fact]
-    public async Task GetFlightById_ReturnsCachedError_WhenCached()
-    {
-        // Arrange
-        var cache = new MemoryCache(new MemoryCacheOptions());
-        var context = GetDbContext("flightsDb");
+        [Fact]
+        public async Task GetFlightById_ReturnsCachedError_WhenCached()
+        {
+            // Arrange
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var context = GetDbContext("flightsDb");
 
-        var error = new Error(404, "/api/flight/404", "Not found");
-        string cacheKey = "user:autorized:flights:404";
-        cache.Set(cacheKey, error);
+            var error = new Error(404, "/api/flight/404", "Not found");
+            string cacheKey = "user:autorized:flights:404";
+            cache.Set(cacheKey, error);
 
-        var controller = new FlightController(context, cache);
-        var httpContext = new DefaultHttpContext();
+            var controller = new FlightController(context, cache);
+            var httpContext = new DefaultHttpContext();
             httpContext.Request.Scheme = "https";
             httpContext.Request.Host = new HostString("localhost");
 
@@ -422,15 +423,41 @@ namespace ProjectD
                 HttpContext = httpContext
             };
 
-        // Act
+            // Act
             var result = await controller.GetFlightById(404);
 
-        // Assert
-        var notFound = Assert.IsType<NotFoundObjectResult>(result.Result);
-        var returnedError = Assert.IsType<Error>(notFound.Value);
-        Assert.Equal(404, returnedError.StatusCode);
-    }
+            // Assert
+            var notFound = Assert.IsType<NotFoundObjectResult>(result.Result);
+            var returnedError = Assert.IsType<Error>(notFound.Value);
+            Assert.Equal(404, returnedError.StatusCode);
+        }
+        [Fact]
+        public async Task FilterFlights_CachesTheResultAfterExecution()
+        {
+            // Arrange
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            var context = GetDbContext(Guid.NewGuid().ToString()); // bevat mockdata (bijv. 1 vlucht)
 
-    }
+            var controller = new FlightController(context, cache);
 
+            var httpContext = new DefaultHttpContext();
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext
+            };
+
+            // Act
+            var result = await controller.FilterFlights(null, null, null); // geen filters, dus alle vluchten
+
+            // Assert
+            var ok = Assert.IsType<OkObjectResult>(result);
+            var page = Assert.IsType<PageManagerFlights>(ok.Value);
+
+            // Controleren dat cache is gevuld
+            var cacheKey = "user:autorized:flights:filter:id:?:date:?:country:?:page:1";
+            Assert.True(cache.TryGetValue(cacheKey, out PageManagerFlights cachedPage));
+
+            Assert.Equal(page.Flights.Length, cachedPage.TotalItems);
+        }
+    }
 }
