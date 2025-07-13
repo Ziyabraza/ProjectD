@@ -368,7 +368,7 @@ namespace ProjectD
             var result = await controller.GetFlightById(100);
             var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result.Result);
             var error = Assert.IsType<Error>(UNAresult.Value);
-            Assert.Equal(new Error(401, "api/FlightController/100", "Test Unoutorized").Details, error.Details);
+            Assert.Equal("Unauthorized - Authentication is required.", error.Details);
         }
         [Fact]
         public async Task GetFlightWithId_Unautorized_Details()
@@ -382,7 +382,7 @@ namespace ProjectD
             var result = await controller.GetFlightsWithID();
             var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result.Result);
             var error = Assert.IsType<Error>(UNAresult.Value);
-            Assert.Equal(new Error(401, "api/flight", "Test Unoutorized").Details, error.Details);
+            Assert.Equal("Unauthorized - Authentication is required.", error.Details);
         }
         [Fact]
         public async Task FilterFlights_Unautorized_Details()
@@ -396,7 +396,52 @@ namespace ProjectD
             var result = await controller.FilterFlights(null, null, null, 1);
             var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
             var error = Assert.IsType<Error>(UNAresult.Value);
-            Assert.Equal(new Error(401, "api/flight", "Test Unoutorized").Details, error.Details);
+            Assert.Equal("Unauthorized - Authentication is required.", error.Details);
+        }
+        [Fact]
+        public async Task GetFlightBy_Unautorized_Url()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+            controller.Request.Path = "/api/FlightController/100";
+
+            var result = await controller.GetFlightById(100);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result.Result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(error.Url, controller.Request.Path);
+        }
+        [Fact]
+        public async Task GetFlightsWithID_Unautorized_Url()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+            controller.Request.Path = "/api/FlightController/Flights with IDs and URL";
+
+            var result = await controller.GetFlightsWithID();
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result.Result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(error.Url, controller.Request.Path);
+        }
+        [Fact]
+        public async Task FilterFlights_Unautorized_Url()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetDbContext(Guid.NewGuid().ToString());
+            var controller = new FlightController(context, memoryCache);
+            LoginAsAnonymous(controller);
+            controller.Request.Path = "/api/flight";
+
+            var result = await controller.FilterFlights(null, null, null, 1);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(error.Url, controller.Request.Path);
         }
         private FlightController GetControllerWithMockedRequest(FlightDBContext context)
         {
@@ -439,7 +484,6 @@ namespace ProjectD
             Assert.Equal(1, flight.Id);
             Console.WriteLine("Flight ID matched expected value (1). ✅ Test SUCCESS.");
         }
-
         [Fact]
         public async Task GetFlightById_ReturnsNotFound_WhenMissing()
         {

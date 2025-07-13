@@ -157,7 +157,7 @@ namespace ProjectD
             var result = await controller.GetByPage(1);
             var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
             var error = Assert.IsType<Error>(UNAresult.Value);
-            Assert.Equal(new Error(401, "api/SearchByFlightID/100", "Test Unoutorized").Details, error.Details);
+            Assert.Equal("Unauthorized - Authentication is required.", error.Details);
         }
         [Fact]
         public async Task GetByID_Unautorized_Details()
@@ -171,7 +171,37 @@ namespace ProjectD
             var result = await controller.GetByID(100);
             var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
             var error = Assert.IsType<Error>(UNAresult.Value);
-            Assert.Equal(new Error(401, "api/Touchpoint/page/1", "Test Unoutorized").Details, error.Details);
+            Assert.Equal("Unauthorized - Authentication is required.", error.Details);
+        }
+        [Fact]
+        public async Task GetByPage_Unautorized_Url()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context, memoryCache);
+            LoginAsAnonymous(controller);
+            controller.Request.Path = "/api/Touchpoint/page/1";
+
+            var result = await controller.GetByPage(1);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(error.Url, controller.Request.Path);
+        }
+        [Fact]
+        public async Task GetBy_Unautorized_Url()
+        {
+            var options = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(options);
+            var context = GetInMemoryDbContext();
+            var controller = new TouchpointController(context, memoryCache);
+            LoginAsAnonymous(controller);
+            controller.Request.Path = "/api/Touchpoint/SearchByFlightID/1";
+
+            var result = await controller.GetByID(100);
+            var UNAresult = Assert.IsType<UnauthorizedObjectResult>(result);
+            var error = Assert.IsType<Error>(UNAresult.Value);
+            Assert.Equal(error.Url, controller.Request.Path);
         }
         [Fact]
         public async Task GetByID_Returns_Ok_When_FlightId_Matches_CheckSingle()
@@ -188,7 +218,6 @@ namespace ProjectD
 
             Assert.Single(list);
         }
-
         [Fact]
         public async Task GetByID_Returns_Ok_When_FlightId_Matches_FlightID()
         {

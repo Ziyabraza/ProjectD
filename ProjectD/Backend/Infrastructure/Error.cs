@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Serilog.Sinks.PostgreSQL.ColumnWriters;
 using NpgsqlTypes;
 using Newtonsoft.Json.Linq;
+using ZSpitz.Util;
 
 public class Error
 {
@@ -35,7 +36,7 @@ public class Error
     {
         StatusCode = statusCode;
         Message = message == null ? "An error occurred." : message;
-        Url = url;
+        Url = url.IsNullOrEmpty() ? "UNKNOWN" : url;
         Date = DateTime.Now;
         LogError(Date);
         LogSerilog();
