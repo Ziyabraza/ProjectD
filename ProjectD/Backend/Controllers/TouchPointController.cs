@@ -1,7 +1,9 @@
+using FsToolkit.ErrorHandling;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Net.Http.Headers;
 using ProjectD.Models; // Ensure you have the correct namespace for your models
 
@@ -13,27 +15,33 @@ namespace ProjectD
     public class TouchpointController : ControllerBase
     {
         private readonly FlightDBContext _context; // Your DbContext
+        private readonly IMemoryCache _cache;
 
-        public TouchpointController(FlightDBContext context)
+        public TouchpointController(FlightDBContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         [Authorize(Roles = "User, Admin")]
         [HttpGet("page/{page}")]
-        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetPage1(int page)
+        public async Task<IActionResult> GetByPage(int page)
         {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
-            {
-                Private = true,
-                MaxAge = TimeSpan.FromSeconds(60)
-            };
-            Response.Headers["Vary"] = "Authorization";
             if (page < 1)
             {
                 new Error(302, Request.Path, "Page number must be greater than 0.");
                 return Redirect("1");
+            }
+            
+            string userId = User?.Identity?.IsAuthenticated == true ? "authorized" : "anonymous";
+            string cacheKey = $"user:{userId}:touchpoints:page:{page}";
+            if (userId == "anonymous")
+            {
+                return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource."));
+            }
+            if (_cache.TryGetValue(cacheKey, out PageManagerTouchpoints cachedResult))
+            {
+                return Ok(cachedResult);
             }
 
             int totalCount = await _context.Touchpoints.CountAsync();
@@ -56,21 +64,33 @@ namespace ProjectD
                 return NotFound(new Error(404, Request.Path, "An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence."));
             }
 
-            return Ok(new PageManager(page, totalPages, touchpoints));
+            PageManagerTouchpoints result = new PageManagerTouchpoints(page, totalPages, touchpoints);
+            _cache.Set(cacheKey, result, TimeSpan.FromSeconds(300));
+
+            return Ok(new PageManagerTouchpoints(page, totalPages, touchpoints));
         }
 
 
         [Authorize(Roles = "User, Admin")]
         [HttpGet("SearchByFlightID/{id}")]
-        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetByID(int id)
         {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
+            // try to extract out of server sided cache
+            string userId = User?.Identity?.IsAuthenticated == true ? "authorized" : "anonymous";
+            string cacheKey = $"user:{userId}:touchpoints:SearchByFlightID:{id}";
+            if (userId == "anonymous")
             {
-                Private = true,
-                MaxAge = TimeSpan.FromSeconds(60)
-            };
-            Response.Headers["Vary"] = "Authorization";
+                // gebruiker is niet ingeloged
+                return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource.")); 
+            }
+            if (_cache.TryGetValue(cacheKey, out List<Touchpoint> cachedResult)) // try List<Touchpoint result
+            {
+                return Ok(cachedResult);
+            }
+            if (_cache.TryGetValue(cacheKey, out Error cachedError)) // try Error result
+            {
+                return NotFound(cachedError);
+            }
             bool found = false;
             // string message = "Match(es) found:\n\n";
             List<Touchpoint> results = new();
@@ -80,19 +100,24 @@ namespace ProjectD
             {
                 if (touchpoint.FlightId == id)
                 {
-
                     // found = true;
                     results.Add(touchpoint);
                 }
             }
             if (touchpoints == null || touchpoints.Length == 0)
             {
-                return NotFound(new Error(404, Request.Path, "An error occured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence."));
+                Error error = new Error(404, Request.Path, "An error occured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.");
+                _cache.Set(cacheKey, error, TimeSpan.FromSeconds(300));
+                return NotFound(error);
             }
             if (results == null || results.Count == 0)
             {
-                return NotFound(new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}."));
+                Error error = new Error(404, Request.Path, $"No touchpoints found for Flight ID {id}.");
+                _cache.Set(cacheKey, error, TimeSpan.FromSeconds(300));
+                return NotFound(error);
             }
+
+            _cache.Set(cacheKey, results, TimeSpan.FromSeconds(300));
             return Ok(results);
         }
     }
