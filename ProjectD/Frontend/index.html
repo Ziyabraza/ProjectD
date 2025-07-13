@@ -1,101 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ProjectD API Frontend</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
     <div class="container">
-        <h1>ProjectD API Frontend</h1>
-        
-        <div class="main-content-wrapper">
-            <div class="left-column">
-                <!-- Flights Section -->
-                <section id="flights-section">
-                    <h2>Flights</h2>
-                    <div>
-                        <h3>Get Flight by ID</h3>
-                        <input type="text" id="flight-id-input" placeholder="Enter Flight ID">
-                        <button onclick="getFlightById()">Get Flight</button>
-                        <div id="flight-id-result" class="result"></div>
-                    </div>
-                    <div>
-                        <h3>Get All Flight URLs</h3>
-                        <button onclick="getFlightsWithUrls()">Get Flights with URLs</button>
-                        <div id="flights-urls-result" class="result"></div>
-                    </div>
-                    <div>
-                        <h3>Filter Flights</h3>
-                        <input type="text" id="filter-id" placeholder="Flight ID (optional)">
-                        <input type="text" id="filter-date" placeholder="Date (YYYY-MM-DD, optional)">
-                        <input type="text" id="filter-country" placeholder="Country (optional)">
-                        <input type="text" id="filter-page" placeholder="Page (default 1)">
-                        <button onclick="filterFlights()">Filter Flights</button>
-                        <div id="filter-flights-result" class="result"></div>
-                    </div>
-                </section>
+      <h1>ProjectD API Frontend</h1>
 
-                <hr/>
-
-                <!-- Touchpoints Section -->
-                <section id="touchpoints-section">
-                    <h2>Touchpoints</h2>
-                    <div>
-                        <h3>Get Touchpoints by Page</h3>
-                        <input type="text" id="touchpoint-page-input" placeholder="Page Number">
-                        <button onclick="getTouchpointsByPage()">Get Touchpoints</button>
-                        <div id="touchpoints-page-result" class="result"></div>
-                    </div>
-                    <div>
-                        <h3>Get Touchpoints by Flight ID</h3>
-                        <input type="text" id="touchpoint-flightid-input" placeholder="Flight ID">
-                        <button onclick="getTouchpointsByFlightId()">Get Touchpoints</button>
-                        <div id="touchpoints-flightid-result" class="result"></div>
-                    </div>
-                </section>
-
-                <hr/>
-
-                <!-- Import Section -->
-                <section id="import-section">
-                    <h2>Import Excel Data</h2>
-                    <form id="import-form" enctype="multipart/form-data" onsubmit="importExcel(event)">
-                        <input type="file" id="flights-file" accept=".xlsx,.xls">
-                        <input type="file" id="touchpoints-file" accept=".xlsx,.xls">
-                        <button type="submit">Import</button>
-                    </form>
-                    <div id="import-result" class="result"></div>
-                </section>
+      <div class="main-content-wrapper">
+        <div class="left-column">
+          <!-- Flights Section -->
+          <section id="flights-section">
+            <h2>Flights</h2>
+            <div>
+              <h3>Get Flight by ID</h3>
+              <input
+                type="text"
+                id="flight-id-input"
+                placeholder="Enter Flight ID"
+              />
+              <button onclick="getFlightById()">Get Flight</button>
+              <div id="flight-id-result" class="result"></div>
             </div>
-            <div class="right-column">
-                <!-- Auth Section -->
-                <section id="auth-section">
-                    <h2>Authentication</h2>
-                    <div>
-                        <h3>Login</h3>
-                        <input type="text" id="login-username" placeholder="Username">
-                        <input type="password" id="login-password" placeholder="Password">
-                        <button onclick="loginUser()">Login</button>
-                        <div id="login-result" class="result"></div>
-                        <div id="token-container" style="margin-top:15px; display:none;">
-                            <label for="bearer-token">Bearer Token:</label>
-                            <input type="text" id="bearer-token" readonly style="width:80%">
-                            <button onclick="copyToken()" type="button">Copy</button>
-                        </div>
-                        <div style="margin-top:15px;">
-                            <label for="manual-token">Paste Bearer Token:</label>
-                            <input type="text" id="manual-token" style="width:80%">
-                            <button onclick="setManualToken()" type="button">Set Token</button>
-                        </div>
-                        <div id="token-status" class="result"></div>
-                    </div>
-                </section>
+            <div>
+              <h3>Get All Flight URLs</h3>
+              <input
+                type="number"
+                id="flights-page-input"
+                placeholder="Page number (default 1)"
+                min="1"
+              />
+              <button onclick="getFlightsWithUrls()">
+                Get Flights with URLs
+              </button>
             </div>
+            <div>
+              <h3>Filter Flights</h3>
+              <input
+                type="text"
+                id="filter-id"
+                placeholder="Flight ID (optional)"
+              />
+              <input
+                type="text"
+                id="filter-date"
+                placeholder="Date (YYYY-MM-DD, optional)"
+              />
+              <input
+                type="text"
+                id="filter-country"
+                placeholder="Country (optional)"
+              />
+              <input
+                type="text"
+                id="filter-page"
+                placeholder="Page (default 1)"
+              />
+              <button onclick="filterFlights()">Filter Flights</button>
+              <div id="filter-flights-result" class="result"></div>
+            </div>
+          </section>
+
+          <hr />
+
+          <!-- Touchpoints Section -->
+          <section id="touchpoints-section">
+            <h2>Touchpoints</h2>
+            <div>
+              <h3>Get Touchpoints by Page</h3>
+              <input
+                type="text"
+                id="touchpoint-page-input"
+                placeholder="Page Number"
+              />
+              <button onclick="getTouchpointsByPage()">Get Touchpoints</button>
+              <div id="touchpoints-page-result" class="result"></div>
+            </div>
+            <div>
+              <h3>Get Touchpoints by Flight ID</h3>
+              <input
+                type="text"
+                id="touchpoint-flightid-input"
+                placeholder="Flight ID"
+              />
+              <button onclick="getTouchpointsByFlightId()">
+                Get Touchpoints
+              </button>
+              <div id="touchpoints-flightid-result" class="result"></div>
+            </div>
+          </section>
+
+          <hr />
+
+          <!-- Import Section -->
+          <section id="import-section">
+            <h2>Import Excel Data</h2>
+            <form
+              id="import-form"
+              enctype="multipart/form-data"
+              onsubmit="importExcel(event)"
+            >
+              <input type="file" id="flights-file" accept=".xlsx,.xls" />
+              <input type="file" id="touchpoints-file" accept=".xlsx,.xls" />
+              <button type="submit">Import</button>
+            </form>
+            <div id="import-result" class="result"></div>
+          </section>
         </div>
+        <div class="right-column">
+          <!-- Auth Section -->
+          <section id="auth-section">
+            <h2>Authentication</h2>
+            <div>
+              <h3>Login</h3>
+              <input type="text" id="login-username" placeholder="Username" />
+              <input
+                type="password"
+                id="login-password"
+                placeholder="Password"
+              />
+              <button onclick="loginUser()">Login</button>
+              <div id="login-result" class="result"></div>
+              <div id="token-container" style="margin-top: 15px; display: none">
+                <label for="bearer-token">Bearer Token:</label>
+                <input
+                  type="text"
+                  id="bearer-token"
+                  readonly
+                  style="width: 80%"
+                />
+                <button onclick="copyToken()" type="button">Copy</button>
+              </div>
+              <div style="margin-top: 15px">
+                <label for="manual-token">Paste Bearer Token:</label>
+                <input type="text" id="manual-token" style="width: 80%" />
+                <button onclick="setManualToken()" type="button">
+                  Set Token
+                </button>
+              </div>
+              <div id="token-status" class="result"></div>
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
     <script src="js/flightSearch.js"></script>
     <script src="js/apiSections.js"></script>
-</body>
+  </body>
 </html>

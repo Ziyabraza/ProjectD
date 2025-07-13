@@ -134,17 +134,22 @@ async function getFlightsWithUrls() {
     const resultDiv = document.getElementById('flights-urls-result');
     resultDiv.innerHTML = '';
     if (!checkToken(resultDiv)) return;
+
+    const pageInput = document.getElementById('flights-page-input');
+    let page = parseInt(pageInput.value) || 1;
+
     try {
-        const response = await fetch(`${API_BASE_URL}/api/flight/Flights%20with%20IDs%20and%20URL`, {
+        const response = await fetch(`${API_BASE_URL}/api/flight/Flights%20with%20IDs%20and%20URL?page=${page}&pageSize=100`, {
             headers: getAuthHeader()
         });
+
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
             const data = await response.json();
             if (response.ok) {
-                let html = '<ul>';
-                for (const [id, url] of Object.entries(data)) {
-                    html += `<li>Flight ID: ${id} - <a href="${url}" target="_blank">${url}</a></li>`;
+                let html = `<p>Page ${data.pageNumber} of ${data.totalPages} (Total Flights: ${data.totalItems})</p><ul>`;
+                for (const flight of data.flights) {
+                    html += `<li>Flight ID: ${flight.id} - <a href="${flight.url}" target="_blank">${flight.url}</a></li>`;
                 }
                 html += '</ul>';
                 resultDiv.innerHTML = html;

@@ -61,38 +61,62 @@ namespace ProjectD
 
         [Authorize(Roles = "Admin")]
         [HttpGet("Flights with IDs and URL")]
-        public async Task<ActionResult<Dictionary<int, string>>> GetFlightsWithID()
+        public async Task<ActionResult<object>> GetFlightsWithID([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var URL = $"{Request.Scheme}://{Request.Host}/api/flight";
-            string userId = User?.Identity?.IsAuthenticated == true ? "authorized" : "anonymous";
-            string cacheKey = $"user:{userId}:flights:Flights_with_IDs_and_URL";
-            if (userId == "anonymous")
+            if (User?.Identity?.IsAuthenticated != true)
             {
                 return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource."));
             }
-            if (_cache.TryGetValue(cacheKey, out  Dictionary<int, string>? cachedResult))
-            {
-                return Ok(cachedResult);
-            }
-            if (_cache.TryGetValue(cacheKey, out Error cachedError))
-            {
-                return NotFound(cachedError);
-            }
-            var flightsLinks = await _context.Flights
-                .Select(f => new { f.Id })
-                .ToDictionaryAsync(
-                    f => f.Id,
-                    f => $"{URL}/{f.Id}"
-                );
 
-            if (!flightsLinks.Any())
+            if (page <= 0) page = 1;
+            if (pageSize <= 0) pageSize = 10;
+
+            string userId = "authorized";
+            string cacheKey = $"user:{userId}:flights:Flights_with_IDs_and_URL:page{page}:size{pageSize}";
+
+            if (_cache.TryGetValue(cacheKey, out object? cachedPage))
             {
-                Error error = new Error(404, Request?.Path ?? "/unknown", "No flights found");
+                return Ok(cachedPage);
+            }
+
+            int totalItems = await _context.Flights.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            if (page > totalPages && totalPages > 0)
+            {
+                page = totalPages;
+            }
+
+            var baseUrl = $"{Request.Scheme}://{Request.Host}/api/flight";
+
+            var flightsWithUrls = await _context.Flights
+                .OrderBy(f => f.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(f => new
+                {
+                    Id = f.Id,
+                    Url = $"{baseUrl}/{f.Id}"
+                })
+                .ToListAsync();
+
+            if (flightsWithUrls.Count == 0)
+            {
+                var error = new Error(404, Request.Path, "No flights found.");
                 _cache.Set(cacheKey, error, TimeSpan.FromSeconds(300));
                 return NotFound(error);
             }
-            _cache.Set(cacheKey, flightsLinks, TimeSpan.FromSeconds(300));
-            return Ok(flightsLinks);
+
+            var result = new
+            {
+                PageNumber = page,
+                TotalPages = totalPages,
+                TotalItems = totalItems,
+                Flights = flightsWithUrls
+            };
+
+            _cache.Set(cacheKey, result, TimeSpan.FromSeconds(300));
+            return Ok(result);
         }
 
         [Authorize(Roles = "User, Admin")]
@@ -126,7 +150,7 @@ namespace ProjectD
             {
                 return NotFound(cachedError);
             }
-            
+
             var query = _context.Flights.AsQueryable();
 
             if (id.HasValue)
