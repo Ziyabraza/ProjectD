@@ -132,7 +132,7 @@ async function getFlightById() {
 
 async function getFlightsWithUrls() {
     const resultDiv = document.getElementById('flights-urls-result');
-    resultDiv.innerHTML = `<div class="flights-list">${html}</div>`;
+    resultDiv.innerHTML = '';
     if (!checkToken(resultDiv)) return;
 
     const pageInput = document.getElementById('flights-page-input');
