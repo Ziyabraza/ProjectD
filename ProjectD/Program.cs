@@ -162,14 +162,14 @@ app.UseDefaultFiles(new DefaultFilesOptions
     FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
         Path.Combine(builder.Environment.ContentRootPath, "Frontend")
     ),
-    RequestPath = "" // Serve from the root of the application
+    RequestPath = "/Frontend" // Serve from the /Frontend path
 });
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
         Path.Combine(builder.Environment.ContentRootPath, "Frontend")
     ),
-    RequestPath = "" // Serve from the root of the application
+    RequestPath = "/Frontend" // Serve from the /Frontend path
 });
 
 app.UseRouting();
