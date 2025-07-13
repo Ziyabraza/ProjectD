@@ -1,3 +1,6 @@
+// Define your API base URL here. Change this to your deployed API URL when going live.
+const API_BASE_URL = 'https://projectje-d6d4arfxb6anhrcj.westeurope-01.azurewebsites.net';
+
 // --- Auth Section ---
 function updateTokenStatus() {
     const token = localStorage.getItem('bearerToken');
@@ -23,7 +26,7 @@ async function loginUser() {
         return;
     }
     try {
-        const response = await fetch('http://localhost:5165/api/auth/login', {
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -104,7 +107,7 @@ async function getFlightById() {
         return;
     }
     try {
-        const response = await fetch(`http://localhost:5165/api/flight/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/flight/${id}`, {
             headers: getAuthHeader()
         });
         const contentType = response.headers.get('content-type');
@@ -132,7 +135,7 @@ async function getFlightsWithUrls() {
     resultDiv.innerHTML = '';
     if (!checkToken(resultDiv)) return;
     try {
-        const response = await fetch('http://localhost:5165/api/flight/Flights%20with%20IDs%20and%20URL', {
+        const response = await fetch(`${API_BASE_URL}/api/flight/Flights%20with%20IDs%20and%20URL`, {
             headers: getAuthHeader()
         });
         const contentType = response.headers.get('content-type');
@@ -174,7 +177,7 @@ async function filterFlights() {
     if (country) params.append('country', country);
     if (page) params.append('page', page);
     try {
-        const response = await fetch(`http://localhost:5165/api/flight/filter?${params.toString()}`, {
+        const response = await fetch(`${API_BASE_URL}/api/flight/filter?${params.toString()}`, {
             headers: getAuthHeader()
         });
         const contentType = response.headers.get('content-type');
@@ -214,7 +217,7 @@ async function getTouchpointsByPage() {
         return;
     }
     try {
-        const response = await fetch(`http://localhost:5165/api/touchpoint/page/${page}`, {
+        const response = await fetch(`${API_BASE_URL}/api/touchpoint/page/${page}`, {
             headers: getAuthHeader()
         });
         const contentType = response.headers.get('content-type');
@@ -255,7 +258,7 @@ async function getTouchpointsByFlightId() {
         return;
     }
     try {
-        const response = await fetch(`http://localhost:5165/api/touchpoint/SearchByFlightID/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/touchpoint/SearchByFlightID/${id}`, {
             headers: getAuthHeader()
         });
         const contentType = response.headers.get('content-type');
@@ -294,7 +297,7 @@ async function importExcel(event) {
     formData.append('FlightsFile', flightsFile);
     formData.append('TouchpointsFile', touchpointsFile);
     try {
-        const response = await fetch('http://localhost:5165/api/excelimport/flights', {
+        const response = await fetch(`${API_BASE_URL}/api/excelimport/flights`, {
             method: 'POST',
             body: formData,
             headers: getAuthHeader()
