@@ -156,6 +156,22 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
+// Enable default files (like index.html) and static files from the Frontend directory
+app.UseDefaultFiles(new DefaultFilesOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Frontend")
+    ),
+    RequestPath = "" // Serve from the root of the application
+});
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Frontend")
+    ),
+    RequestPath = "" // Serve from the root of the application
+});
+
 app.UseRouting();
 // Enable CORS before authentication/authorization
 app.UseCors();
