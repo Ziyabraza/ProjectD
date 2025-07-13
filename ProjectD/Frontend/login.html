@@ -1,67 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - ProjectD</title>
-  <link rel="stylesheet" href="css/styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ProjectD API Frontend</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Login to ProjectD</h1>
-    <section>
-      <h2>Authentication</h2>
-      <input type="text" id="login-username" placeholder="Username" />
-      <input type="password" id="login-password" placeholder="Password" />
-      <button onclick="handleLogin()">Login</button>
-      <div id="login-result" class="result"></div>
-    </section>
-  </div>
-
-  <script>
-    const API_BASE_URL = 'https://projectje-d6d4arfxb6anhrcj.westeurope-01.azurewebsites.net';
-
-    async function handleLogin() {
-      const username = document.getElementById('login-username').value.trim();
-      const password = document.getElementById('login-password').value.trim();
-      const resultDiv = document.getElementById('login-result');
-      resultDiv.innerHTML = '';
-
-      if (!username || !password) {
-        resultDiv.innerHTML = '<span style="color:red">Please enter both username and password.</span>';
-        return;
-      }
-
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          },
-          body: JSON.stringify({ Username: username, Password: password })
-        });
-
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const data = await response.json();
-          if (response.ok && data.token) {
-            sessionStorage.setItem('bearerToken', data.token);
-            // Redirect to main page
-            window.location.href = 'index.html';
-          } else {
-            resultDiv.innerHTML = `<span style='color:red'>${data.message || 'Login failed'}</span>`;
-          }
-        } else {
-          const text = await response.text();
-          resultDiv.innerHTML = `<span style='color:red'>${text || 'Login failed'}</span>`;
-        }
-      } catch (err) {
-        resultDiv.innerHTML = `<span style='color:red'>Error: ${err.message}</span>`;
-      }
-    }
-  </script>
+    <div class="container">
+        <h1>Login to ProjectD API</h1>
+        <section id="auth-section">
+            <h2>Authentication</h2>
+            <div>
+                <h3>Login</h3>
+                <input type="text" id="login-username" placeholder="Username">
+                <input type="password" id="login-password" placeholder="Password">
+                <button onclick="loginUser()">Login</button>
+                <div id="login-result" class="result"></div>
+                <div id="token-container" style="margin-top:15px; display:none;">
+                    <label for="bearer-token">Bearer Token:</label>
+                    <input type="text" id="bearer-token" readonly style="width:80%">
+                    <button onclick="copyToken()" type="button">Copy</button>
+                </div>
+                <div style="margin-top:15px;">
+                    <label for="manual-token">Paste Bearer Token:</label>
+                    <input type="text" id="manual-token" style="width:80%">
+                    <button onclick="setManualToken()" type="button">Set Token</button>
+                </div>
+                <div id="token-status" class="result"></div>
+            </div>
+        </section>
+    </div>
+    <script src="js/login.js"></script>
 </body>
 </html>

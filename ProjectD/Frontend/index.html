@@ -68,7 +68,7 @@
               >
                 Get Flights with URLs
               </button>
-              <div id="flights-urls-result" class="result"></div>
+              <div id="flights-urls-result" class="result flights-list"></div>
             </div>
             <div>
               <h3>Filter Flights</h3>
@@ -143,9 +143,16 @@
             <div id="import-result" class="result"></div>
           </section>
         </div>
-        <div class="right-column"></div>
+        <div class="right-column">
+          <section>
+            <h2>Session</h2>
+            <p id="token-status" class="result"></p>
+            <button onclick="logout()">Logout</button>
+          </section>
+        </div>
       </div>
     </div>
+    <script src="js/flightSearch.js"></script>
     <script src="js/apiSections.js"></script>
   </body>
 </html>
