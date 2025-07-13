@@ -2,101 +2,47 @@
 const API_BASE_URL = 'https://projectje-d6d4arfxb6anhrcj.westeurope-01.azurewebsites.net';
 
 // --- Auth Section ---
-function updateTokenStatus() {
-    // const token = localStorage.getItem('bearerToken'); // No longer store in localStorage
-    const token = document.getElementById('bearer-token').value.trim(); // Check the displayed token
-    const statusDiv = document.getElementById('token-status');
-    if (token) {
-        statusDiv.innerHTML = '<span style="color:green">Bearer token is set and active.</span>';
-    } else {
-        statusDiv.innerHTML = '<span style="color:red">No active bearer token. Please login and set token, or paste a token.</span>';
-    }
-}
-
-async function loginUser() {
-    const username = document.getElementById('login-username').value.trim();
-    const password = document.getElementById('login-password').value.trim();
-    const resultDiv = document.getElementById('login-result');
-    const tokenContainer = document.getElementById('token-container');
-    const tokenInput = document.getElementById('bearer-token');
-    resultDiv.innerHTML = '';
-    tokenContainer.style.display = 'none'; // Hide token display until successful login
-    tokenInput.value = '';
-    if (!username || !password) {
-        resultDiv.innerHTML = '<span style="color:red">Please enter both username and password.</span>';
-        return;
-    }
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache, no-store, must-revalidate',
-                'Pragma': 'no-cache',
-                'Expires': '0'
-            },
-            body: JSON.stringify({ Username: username, Password: password })
-        });
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-            const data = await response.json();
-            if (response.ok && data.token) {
-                // Display the token but DO NOT automatically set it for other requests
-                tokenInput.value = data.token.trim(); // Trim here as well
-                tokenContainer.style.display = 'block';
-                resultDiv.innerHTML = `<span style='color:green'>Login successful! Copy token and paste below to activate.</span>`;
-            } else {
-                console.error('Login error response (JSON):', response.status, data);
-                resultDiv.innerHTML = `<span style='color:red'>${data.message || data.details || `Login failed. Status: ${response.status}`}</span>`;
-            }
-        } else {
-            const text = await response.text();
-            console.error('Login error response (text):', response.status, text);
-            resultDiv.innerHTML = `<span style='color:red'>${text || `Login failed. Status: ${response.status}`}</span>`;
-        }
-    } catch (err) {
-        console.error('Fetch error on login:', err);
-        resultDiv.innerHTML = `<span style='color:red'>Error: ${err.message}</span>`;
-    }
-}
-
-function copyToken() {
-    const tokenInput = document.getElementById('bearer-token');
-    tokenInput.select();
-    tokenInput.setSelectionRange(0, 99999);
-    document.execCommand('copy');
-}
-
-function setManualToken() {
-    const manualTokenInput = document.getElementById('manual-token');
-    const manualToken = manualTokenInput.value.trim(); // Trim before using
-    const tokenInput = document.getElementById('bearer-token');
-    const tokenContainer = document.getElementById('token-container');
-
-    if (manualToken) {
-        // localStorage.setItem('bearerToken', manualToken); // REMOVED: No longer store in localStorage
-        // Also update the displayed token if it was empty or different
-        if (tokenInput.value !== manualToken) {
-            tokenInput.value = manualToken;
-        }
-        tokenContainer.style.display = 'block';
-    } else {
-        // localStorage.removeItem('bearerToken'); // REMOVED: No longer remove from localStorage
-        tokenInput.value = ''; // Clear displayed token
-        tokenContainer.style.display = 'none';
-    }
-    updateTokenStatus();
+function getAuthHeader() {
+    const token = sessionStorage.getItem('bearerToken');
+    return token ? { 'Authorization': 'Bearer ' + token.trim() } : {};
 }
 
 function checkToken(resultDiv) {
-    // const token = localStorage.getItem('bearerToken'); // No longer retrieve from localStorage
-    const token = document.getElementById('bearer-token').value.trim(); // Check the displayed token
+    const token = sessionStorage.getItem('bearerToken');
     if (!token) {
-        if (resultDiv) resultDiv.innerHTML = '<span style="color:red">You must set a bearer token to use this feature.</span>';
+        if (resultDiv) {
+            resultDiv.innerHTML = `<span style="color:red">You must be logged in. <a href="login.html">Go to login page</a>.</span>`;
+        }
         return false;
     }
     return true;
 }
+
+function updateTokenStatus() {
+    const token = sessionStorage.getItem('bearerToken');
+    const statusDiv = document.getElementById('token-status');
+    if (statusDiv) {
+        if (token) {
+            statusDiv.innerHTML = '<span style="color:green">Logged in with active bearer token.</span>';
+        } else {
+            statusDiv.innerHTML = '<span style="color:red">You are not logged in. <a href="login.html">Go to login page</a>.</span>';
+        }
+    }
+}
+
+function logout() {
+    sessionStorage.removeItem('bearerToken');
+    window.location.href = 'login.html';
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const token = sessionStorage.getItem('bearerToken');
+    if (!token) {
+        window.location.href = 'login.html';
+    } else {
+        updateTokenStatus();
+    }
+});
 
 // --- Flights Section ---
 async function getFlightById() {
@@ -335,10 +281,10 @@ async function importExcel(event) {
 
 // --- Helpers ---
 function getAuthHeader() {
-    const token = document.getElementById('bearer-token').value.trim(); // Get token from the input field
-    // Ensure token is trimmed before being sent in the header
+    const token = sessionStorage.getItem('bearerToken');
     return token ? { 'Authorization': 'Bearer ' + token.trim() } : {};
 }
+
 
 function renderFlightData(flight, short = false) {
     if (!flight) return '';
@@ -383,13 +329,10 @@ function renderTouchpoint(tp) {
 
 // On page load, update token status and show token if present
 window.addEventListener('DOMContentLoaded', () => {
-    updateTokenStatus();
-    // The token is no longer persisted in localStorage, so no need to retrieve it on load
-    // const token = localStorage.getItem('bearerToken'); 
-    // const tokenInput = document.getElementById('bearer-token');
-    // const tokenContainer = document.getElementById('token-container');
-    // if (token && tokenInput && tokenContainer) {
-    //     tokenInput.value = token;
-    //     tokenContainer.style.display = 'block';
-    // }
-}); 
+    const token = sessionStorage.getItem('bearerToken');
+    if (!token) {
+        window.location.href = 'login.html'; // forceer login als token ontbreekt
+    } else {
+        updateTokenStatus();
+    }
+});
