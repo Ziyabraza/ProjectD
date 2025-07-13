@@ -304,7 +304,9 @@ function renderFlightData(flight, short = false) {
 
 function renderTouchpointsPage(pageManager) {
     if (!pageManager || !pageManager.touchpoints) return '';
-    let html = `<div>Page: ${pageManager.pageNumber} / ${pageManager.totalPages} | Total: ${pageManager.totalTouchpointRecords}</div>`;
+    console.log('Touchpoints response:', pageManager);
+    const total = pageManager.touchpoints.length;
+    let html = `<div>Page: ${pageManager.pageNumber} / ${pageManager.totalPages} | Total on this page: ${total}</div>`;
     html += '<ul>';
     for (const tp of pageManager.touchpoints) {
         html += `<li>${renderTouchpoint(tp)}</li>`;

@@ -32,7 +32,7 @@ namespace ProjectD
                 new Error(302, Request.Path, "Page number must be greater than 0.");
                 return Redirect("1");
             }
-            
+
             string userId = User?.Identity?.IsAuthenticated == true ? "authorized" : "anonymous";
             string cacheKey = $"user:{userId}:touchpoints:page:{page}";
             if (userId == "anonymous")
@@ -61,7 +61,7 @@ namespace ProjectD
 
             if (touchpoints.Length == 0)
             {
-                return NotFound(new Error(404, Request.Path, "An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence."));
+                return NotFound(new Error(404, Request.Path, "An error occurred. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvenience."));
             }
 
             PageManagerTouchpoints result = new PageManagerTouchpoints(page, totalPages, touchpoints);
@@ -81,7 +81,7 @@ namespace ProjectD
             if (userId == "anonymous")
             {
                 // gebruiker is niet ingeloged
-                return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource.")); 
+                return Unauthorized(new Error(401, Request.Path, "You must be logged in to access this resource."));
             }
             if (_cache.TryGetValue(cacheKey, out List<Touchpoint> cachedResult)) // try List<Touchpoint result
             {
@@ -106,7 +106,7 @@ namespace ProjectD
             }
             if (touchpoints == null || touchpoints.Length == 0)
             {
-                Error error = new Error(404, Request.Path, "An error occured.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvinence.");
+                Error error = new Error(404, Request.Path, "An error occurred.\nthere are no Touchpoints found make contact with Webprovider if its ongoing issue.\nSorry for inconvenience.");
                 _cache.Set(cacheKey, error, TimeSpan.FromSeconds(300));
                 return NotFound(error);
             }
