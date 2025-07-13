@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
 using ProjectD.Models;
 using System.Security.Claims;
@@ -210,6 +211,19 @@ namespace ProjectD
                 context.SaveChanges();
             }
             return context;
+        }
+        public class FlightsPageDto
+        {
+            public int PageNumber { get; set; }
+            public int TotalPages { get; set; }
+            public int TotalItems { get; set; }
+            public List<FlightUrlDto> Flights { get; set; } = new();
+        }
+
+        public class FlightUrlDto
+        {
+            public int Id { get; set; }
+            public string Url { get; set; } = string.Empty;
         }
 
         private void Login(FlightController controller, string role = "User")
@@ -516,18 +530,16 @@ namespace ProjectD
             var result = await controller.GetFlightsWithID();
             Console.WriteLine("Result type: " + result.Result?.GetType().Name);
 
-
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Console.WriteLine("Asserted result is OkObjectResult.");
 
-            var dictionary = Assert.IsType<Dictionary<int, string>>(okResult.Value);
-            Console.WriteLine($"Asserted result is Dictionary<int, string> with {dictionary.Count} items.");
+            // Serialize naar JSON en terug deserialiseren
+            var json = JsonSerializer.Serialize(okResult.Value);
+            var pageDto = JsonSerializer.Deserialize<FlightsPageDto>(json);
 
-            Assert.Equal(2, dictionary.Count);
-            Console.WriteLine("Dictionary count is correct (2).");
-
-            Assert.Contains("https://localhost/api/flight/1", dictionary.Values);
-            Assert.Contains("https://localhost/api/flight/2", dictionary.Values);
+            Assert.NotNull(pageDto);
+            Assert.Equal(2, pageDto.TotalItems);
+            Assert.Equal(2, pageDto.Flights.Count);
+            Assert.Contains(pageDto.Flights, f => f.Url == "https://localhost/api/flight/1");
             Console.WriteLine("Both expected URLs are present in the dictionary. ✅ Test SUCCESS.");
         }
 
@@ -586,7 +598,7 @@ namespace ProjectD
             Login(controller);
             controller.Request.Scheme = "https";
             controller.Request.Host = new HostString("localhost");
-            
+
 
             // Act
             var result = await controller.GetFlightById(123);
@@ -651,7 +663,7 @@ namespace ProjectD
 
             var controller = new FlightController(context, cache);
             Login(controller);
-            
+
             // Act
             var result = await controller.FilterFlights(null, null, null); // geen filters, dus alle vluchten
 

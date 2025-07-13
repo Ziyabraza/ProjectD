@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProjectD API Frontend</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>ProjectD API Frontend</h1>
+
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        "
+      >
+        <div id="token-status" class="result" style="margin: 0"></div>
+        <button
+          onclick="logout()"
+          style="
+            padding: 8px 16px;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+          "
+        >
+          Logout
+        </button>
+      </div>
+
+      <div class="main-content-wrapper">
+        <div class="left-column">
+          <!-- Flights Section -->
+          <section id="flights-section">
+            <h2>Flights</h2>
+            <div>
+              <h3>Get Flight by ID</h3>
+              <input
+                type="text"
+                id="flight-id-input"
+                placeholder="Enter Flight ID"
+              />
+              <button onclick="getFlightById()">Get Flight</button>
+              <div id="flight-id-result" class="result"></div>
+            </div>
+            <div>
+              <h3>Get All Flight URLs</h3>
+              <input
+                type="number"
+                id="flights-page-input"
+                placeholder="Page number (default 1)"
+                min="1"
+              />
+              <button
+                onclick="getFlightsWithUrls()"
+                style="
+                  min-width: 200px;
+                  height: 40px;
+                  color: white;
+                  background-color: #007bff;
+                "
+              >
+                Get Flights with URLs
+              </button>
+              <div id="flights-urls-result" class="result flights-list"></div>
+            </div>
+            <div>
+              <h3>Filter Flights</h3>
+              <input
+                type="text"
+                id="filter-id"
+                placeholder="Flight ID (optional)"
+              />
+              <input
+                type="text"
+                id="filter-date"
+                placeholder="Date (YYYY-MM-DD, optional)"
+              />
+              <input
+                type="text"
+                id="filter-country"
+                placeholder="Country (optional)"
+              />
+              <input
+                type="text"
+                id="filter-page"
+                placeholder="Page (default 1)"
+              />
+              <button onclick="filterFlights()">Filter Flights</button>
+              <div id="filter-flights-result" class="result"></div>
+            </div>
+          </section>
+
+          <hr />
+
+          <!-- Touchpoints Section -->
+          <section id="touchpoints-section">
+            <h2>Touchpoints</h2>
+            <div>
+              <h3>Get Touchpoints by Page</h3>
+              <input
+                type="text"
+                id="touchpoint-page-input"
+                placeholder="Page Number"
+              />
+              <button onclick="getTouchpointsByPage()">Get Touchpoints</button>
+              <div id="touchpoints-page-result" class="result"></div>
+            </div>
+            <div>
+              <h3>Get Touchpoints by Flight ID</h3>
+              <input
+                type="text"
+                id="touchpoint-flightid-input"
+                placeholder="Flight ID"
+              />
+              <button onclick="getTouchpointsByFlightId()">
+                Get Touchpoints
+              </button>
+              <div id="touchpoints-flightid-result" class="result"></div>
+            </div>
+          </section>
+
+          <hr />
+
+          <!-- Import Section -->
+          <section id="import-section">
+            <h2>Import Excel Data</h2>
+            <form
+              id="import-form"
+              enctype="multipart/form-data"
+              onsubmit="importExcel(event)"
+            >
+              <input type="file" id="flights-file" accept=".xlsx,.xls" />
+              <input type="file" id="touchpoints-file" accept=".xlsx,.xls" />
+              <button type="submit">Import</button>
+            </form>
+            <div id="import-result" class="result"></div>
+          </section>
+        </div>
+        <div class="right-column">
+          <section>
+            <h2>Session</h2>
+            <p id="token-status" class="result"></p>
+            <button onclick="logout()">Logout</button>
+          </section>
+        </div>
+      </div>
+    </div>
+    <script src="js/flightSearch.js"></script>
+    <script src="js/apiSections.js"></script>
+  </body>
+</html>
