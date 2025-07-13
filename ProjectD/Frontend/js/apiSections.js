@@ -3,7 +3,8 @@ const API_BASE_URL = 'https://projectje-d6d4arfxb6anhrcj.westeurope-01.azurewebs
 
 // --- Auth Section ---
 function updateTokenStatus() {
-    const token = localStorage.getItem('bearerToken');
+    // const token = localStorage.getItem('bearerToken'); // No longer store in localStorage
+    const token = document.getElementById('bearer-token').value.trim(); // Check the displayed token
     const statusDiv = document.getElementById('token-status');
     if (token) {
         statusDiv.innerHTML = '<span style="color:green">Bearer token is set and active.</span>';
@@ -73,14 +74,14 @@ function setManualToken() {
     const tokenContainer = document.getElementById('token-container');
 
     if (manualToken) {
-        localStorage.setItem('bearerToken', manualToken); // Store trimmed token
+        // localStorage.setItem('bearerToken', manualToken); // REMOVED: No longer store in localStorage
         // Also update the displayed token if it was empty or different
         if (tokenInput.value !== manualToken) {
             tokenInput.value = manualToken;
         }
         tokenContainer.style.display = 'block';
     } else {
-        localStorage.removeItem('bearerToken');
+        // localStorage.removeItem('bearerToken'); // REMOVED: No longer remove from localStorage
         tokenInput.value = ''; // Clear displayed token
         tokenContainer.style.display = 'none';
     }
@@ -88,7 +89,8 @@ function setManualToken() {
 }
 
 function checkToken(resultDiv) {
-    const token = localStorage.getItem('bearerToken');
+    // const token = localStorage.getItem('bearerToken'); // No longer retrieve from localStorage
+    const token = document.getElementById('bearer-token').value.trim(); // Check the displayed token
     if (!token) {
         if (resultDiv) resultDiv.innerHTML = '<span style="color:red">You must set a bearer token to use this feature.</span>';
         return false;
@@ -333,7 +335,7 @@ async function importExcel(event) {
 
 // --- Helpers ---
 function getAuthHeader() {
-    const token = localStorage.getItem('bearerToken');
+    const token = document.getElementById('bearer-token').value.trim(); // Get token from the input field
     // Ensure token is trimmed before being sent in the header
     return token ? { 'Authorization': 'Bearer ' + token.trim() } : {};
 }
@@ -382,11 +384,12 @@ function renderTouchpoint(tp) {
 // On page load, update token status and show token if present
 window.addEventListener('DOMContentLoaded', () => {
     updateTokenStatus();
-    const token = localStorage.getItem('bearerToken');
-    const tokenInput = document.getElementById('bearer-token');
-    const tokenContainer = document.getElementById('token-container');
-    if (token && tokenInput && tokenContainer) {
-        tokenInput.value = token;
-        tokenContainer.style.display = 'block';
-    }
+    // The token is no longer persisted in localStorage, so no need to retrieve it on load
+    // const token = localStorage.getItem('bearerToken'); 
+    // const tokenInput = document.getElementById('bearer-token');
+    // const tokenContainer = document.getElementById('token-container');
+    // if (token && tokenInput && tokenContainer) {
+    //     tokenInput.value = token;
+    //     tokenContainer.style.display = 'block';
+    // }
 }); 
