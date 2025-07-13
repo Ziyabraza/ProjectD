@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-  <Content Include="Frontend\**\*.*">
+  <Content Include="Frontend\**\*">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>
   </ItemGroup>
