@@ -13,11 +13,13 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Reflection; 
+using System.Reflection;
 using NBomber.CSharp;
 using NBomber.Http;
 using Newtonsoft.Json;
 using ProjectD.Models;
+using Microsoft.Extensions.FileProviders; // Added for PhysicalFileProvider
+using System.IO; // Added for Path.Combine
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
