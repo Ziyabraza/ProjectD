@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ProjectD</name>
+    </assembly>
+    <members>
+        <member name="T:ProjectD.Flight">
+            <summary>
+            Vertegenwoordigt een vlucht met uitgebreide operationele, passagiers- en bagagegegevens.
+            </summary>
+        </member>
+        <member name="P:ProjectD.Flight.Type">
+            <summary>Type van het object (bijv. arrival, departure)</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Id">
+            <summary>Uniek identificatienummer van de vlucht</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TimetableId">
+            <summary>Verwijzing naar het tijdschema</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TrafficType">
+            <summary>Soort verkeer (bijv. commercieel, cargo)</summary>
+        </member>
+        <member name="P:ProjectD.Flight.FlightNumber">
+            <summary>Vluchtnummer</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Diverted">
+            <summary>Geeft aan of de vlucht is omgeleid</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Nachtvlucht">
+            <summary>Geeft aan of het een nachtvlucht betreft</summary>
+        </member>
+        <member name="P:ProjectD.Flight.FlightCode">
+            <summary>Unieke code van de vlucht</summary>
+        </member>
+        <member name="P:ProjectD.Flight.FlightCodeDescription">
+            <summary>Omschrijving van de vluchtcode</summary>
+        </member>
+        <member name="P:ProjectD.Flight.FlightCodeIATA">
+            <summary>IATA-code van de vlucht</summary>
+        </member>
+        <member name="P:ProjectD.Flight.PublicAnnouncement">
+            <summary>Geeft aan of de vlucht publiek wordt aangekondigd</summary>
+        </member>
+        <member name="P:ProjectD.Flight.ScheduledUTC">
+            <summary>Geplande vertrektijd in UTC</summary>
+        </member>
+        <member name="P:ProjectD.Flight.ActualUTC">
+            <summary>Werkelijke vertrektijd in UTC</summary>
+        </member>
+        <member name="P:ProjectD.Flight.ScheduledLocal">
+            <summary>Geplande lokale vertrektijd</summary>
+        </member>
+        <member name="P:ProjectD.Flight.ActualLocal">
+            <summary>Werkelijke lokale vertrektijd</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Bewegingen">
+            <summary>Soort beweging (bijv. aankomst, vertrek)</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Parkeerpositie">
+            <summary>Parkeerpositie van het vliegtuig</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Bus">
+            <summary>Geeft aan of busvervoer gebruikt wordt</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Gate">
+            <summary>Gate-nummer</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Bagageband">
+            <summary>Nummer van de bagageband</summary>
+        </member>
+        <member name="P:ProjectD.Flight.AirportICAO">
+            <summary>ICAO-code van de luchthaven</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Airport">
+            <summary>Naam van de luchthaven</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Country">
+            <summary>Land van bestemming of vertrek</summary>
+        </member>
+        <member name="P:ProjectD.Flight.ViaAirportICAO">
+            <summary>ICAO-code van tussenstop (indien van toepassing)</summary>
+        </member>
+        <member name="P:ProjectD.Flight.ViaAirport">
+            <summary>Naam van tussenstopluchthaven (indien van toepassing)</summary>
+        </member>
+        <member name="P:ProjectD.Flight.AircraftRegistration">
+            <summary>Registratiecode van het vliegtuig</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Seats">
+            <summary>Aantal zitplaatsen aan boord</summary>
+        </member>
+        <member name="P:ProjectD.Flight.MTOW">
+            <summary>Maximum takeoff weight (MTOW) van het vliegtuig</summary>
+        </member>
+        <member name="P:ProjectD.Flight.AircraftType">
+            <summary>Type vliegtuig (bijv. A320)</summary>
+        </member>
+        <member name="P:ProjectD.Flight.AircraftDescription">
+            <summary>Omschrijving van het vliegtuigtype</summary>
+        </member>
+        <member name="P:ProjectD.Flight.EU">
+            <summary>Geeft aan of het een EU-vlucht is</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Schengen">
+            <summary>Geeft aan of het een Schengen-vlucht is</summary>
+        </member>
+        <member name="P:ProjectD.Flight.AirlineFullname">
+            <summary>Volledige naam van de luchtvaartmaatschappij</summary>
+        </member>
+        <member name="P:ProjectD.Flight.AirlineShortname">
+            <summary>Korte naam van de airline</summary>
+        </member>
+        <member name="P:ProjectD.Flight.AirlineICAO">
+            <summary>ICAO-code van de luchtvaartmaatschappij</summary>
+        </member>
+        <member name="P:ProjectD.Flight.AirlineIATA">
+            <summary>IATA-code van de luchtvaartmaatschappij</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Debiteur">
+            <summary>Naam van de afhandelaar (debiteur)</summary>
+        </member>
+        <member name="P:ProjectD.Flight.DebiteurNr">
+            <summary>Nummer van de debiteur</summary>
+        </member>
+        <member name="P:ProjectD.Flight.PaxMale">
+            <summary>Aantal mannelijke passagiers</summary>
+        </member>
+        <member name="P:ProjectD.Flight.PaxFemale">
+            <summary>Aantal vrouwelijke passagiers</summary>
+        </member>
+        <member name="P:ProjectD.Flight.PaxChild">
+            <summary>Aantal kinderen</summary>
+        </member>
+        <member name="P:ProjectD.Flight.PaxInfant">
+            <summary>Aantal baby’s (infants)</summary>
+        </member>
+        <member name="P:ProjectD.Flight.PaxTransitMale">
+            <summary>Aantal mannelijke transitpassagiers</summary>
+        </member>
+        <member name="P:ProjectD.Flight.PaxTransitFemale">
+            <summary>Aantal vrouwelijke transitpassagiers</summary>
+        </member>
+        <member name="P:ProjectD.Flight.PaxTransitChild">
+            <summary>Aantal transitkinderen</summary>
+        </member>
+        <member name="P:ProjectD.Flight.PaxTransitInfant">
+            <summary>Aantal transitbaby’s</summary>
+        </member>
+        <member name="P:ProjectD.Flight.CrewCabin">
+            <summary>Aantal cabinecrewleden</summary>
+        </member>
+        <member name="P:ProjectD.Flight.CrewCockpit">
+            <summary>Aantal cockpitcrewleden</summary>
+        </member>
+        <member name="P:ProjectD.Flight.BagsWeight">
+            <summary>Gewicht van bagage in kilogram</summary>
+        </member>
+        <member name="P:ProjectD.Flight.BagsTransitWeight">
+            <summary>Gewicht van transitbagage in kilogram</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Bags">
+            <summary>Totaal aantal bagagestukken</summary>
+        </member>
+        <member name="P:ProjectD.Flight.BagsTransit">
+            <summary>Aantal transitbagagestukken</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Afhandelaar">
+            <summary>Afhandelaar van de vlucht</summary>
+        </member>
+        <member name="P:ProjectD.Flight.ForecastPercentage">
+            <summary>Verwacht percentage bezetting</summary>
+        </member>
+        <member name="P:ProjectD.Flight.ForecastPax">
+            <summary>Verwacht aantal passagiers</summary>
+        </member>
+        <member name="P:ProjectD.Flight.ForecastBabys">
+            <summary>Verwacht aantal baby’s</summary>
+        </member>
+        <member name="P:ProjectD.Flight.FlightClass">
+            <summary>Klasindeling van de vlucht (economy, business, etc.)</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Datasource">
+            <summary>Bron van de data (bijv. real-time feed)</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TotalPax">
+            <summary>Totaal aantal passagiers</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TerminalPax">
+            <summary>Passagiers in de terminal</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TotalPaxBetalend">
+            <summary>Totaal aantal betalende passagiers</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TerminalPaxBetalend">
+            <summary>Betalende passagiers in de terminal</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TransitPax">
+            <summary>Aantal transitpassagiers</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TransitPaxBetalend">
+            <summary>Betalende transitpassagiers</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TotalCrew">
+            <summary>Totaal aantal crewleden</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TerminalCrew">
+            <summary>Crewleden in de terminal</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TotalSeats">
+            <summary>Totaal aantal stoelen</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TerminalSeats">
+            <summary>Aantal stoelen in de terminal</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TotalBags">
+            <summary>Totaal aantal bagagestukken</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TerminalBags">
+            <summary>Bagagestukken in de terminal</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TransitBags">
+            <summary>Transitbagagestukken</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TotalBagsWeight">
+            <summary>Totaal gewicht van alle bagage</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TerminalBagsWeight">
+            <summary>Gewicht van bagage in de terminal</summary>
+        </member>
+        <member name="P:ProjectD.Flight.TransitBagsWeight">
+            <summary>Gewicht van transitbagage</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Runway">
+            <summary>Naam of ID van de gebruikte landingsbaan</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Longitude">
+            <summary>Lengtegraad van het vliegveld</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Elevation">
+            <summary>Hoogte in meters boven zeeniveau</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Latitude">
+            <summary>Breedtegraad van het vliegveld</summary>
+        </member>
+        <member name="P:ProjectD.Flight.DistanceKilometers">
+            <summary>Afstand in kilometers tot bestemming</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Direction">
+            <summary>Windrichting of aanvliegrichting</summary>
+        </member>
+        <member name="P:ProjectD.Flight.AirportIATA">
+            <summary>IATA-code van de luchthaven</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Parked">
+            <summary>Geeft aan of het vliegtuig geparkeerd staat</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Seizoen">
+            <summary>Seizoen van de vlucht (zomer, winter)</summary>
+        </member>
+        <member name="P:ProjectD.Flight.Touchpoints">
+            <summary>Touchpoints gekoppeld aan deze vlucht</summary>
+        </member>
+        <member name="T:ProjectD.Migrations.InitialFlightSchema">
+            <inheritdoc />
+        </member>
+        <member name="M:ProjectD.Migrations.InitialFlightSchema.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ProjectD.Migrations.InitialFlightSchema.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:ProjectD.Migrations.InitialFlightSchema.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

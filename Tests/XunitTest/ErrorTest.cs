@@ -8,9 +8,9 @@ namespace ProjectD
         private readonly ErrorTestSetup _setup;
         public ErrorTest(ErrorTestSetup setup)
         {
-            _setup = setup; // give ErrorTest a delay to prefent JSON content conflicts with assyncs.
+            _setup = setup; // give ErrorTest a delay to prevent JSON content conflicts with async.
         }
-        public static string ErrorDefaultMessage() => new Error(200, "Returning 'An Error has Acccured' default message").Message;
+        public static string ErrorDefaultMessage() => new Error(200, "Returning 'An Error has occurred' default message").Message;
         private Error GetStatus404NoMessage()
         {
             int statusCode = 404;
@@ -197,7 +197,7 @@ public class ErrorTestSetup : IDisposable
 {
     public ErrorTestSetup()
     {
-        Thread.Sleep(5000);  // Assures prefention JSON file conflict when executing assync methods from other tests
+        Thread.Sleep(5000);  // Assures prevention JSON file conflict when executing async methods from other tests
     }
 
     public void Dispose()

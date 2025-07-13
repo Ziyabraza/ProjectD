@@ -1,0 +1,135 @@
+[
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "User not authenticated.",
+    "Url": "https://example.com/protected",
+    "Date": "2025-07-13T12:43:18.1059629+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.4718856+02:00"
+  },
+  {
+    "StatusCode": 404,
+    "Details": "Not Found - The resource could not be found.",
+    "Message": "Flight with ID 999 not found.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.5063114+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.5100868+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.5233026+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.5363421+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.5492928+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "/api/FlightController/Flights%20with%20IDs%20and%20URL",
+    "Date": "2025-07-13T12:45:31.561873+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "/api/FlightController/100",
+    "Date": "2025-07-13T12:45:31.5819896+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.5907851+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.6042058+02:00"
+  },
+  {
+    "StatusCode": 404,
+    "Details": "Not Found - The resource could not be found.",
+    "Message": "No flights found",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.6534173+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.6606467+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.6789951+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "/api/flight",
+    "Date": "2025-07-13T12:45:31.694015+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.7094321+02:00"
+  },
+  {
+    "StatusCode": 404,
+    "Details": "Not Found - The resource could not be found.",
+    "Message": "Not found",
+    "Url": "/api/flight/404",
+    "Date": "2025-07-13T12:45:31.7649076+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.7684292+02:00"
+  },
+  {
+    "StatusCode": 401,
+    "Details": "Unauthorized - Authentication is required.",
+    "Message": "You must be logged in to access this resource.",
+    "Url": "UNKNOWN",
+    "Date": "2025-07-13T12:45:31.7814395+02:00"
+  }
+]

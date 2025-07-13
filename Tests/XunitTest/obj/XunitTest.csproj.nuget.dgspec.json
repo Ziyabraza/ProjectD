@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\Project D\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj": {}
+    "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\ProjectD.csproj": {
+    "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\ProjectD\\ProjectD.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\ProjectD.csproj",
+        "projectUniqueName": "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\ProjectD\\ProjectD.csproj",
         "projectName": "ProjectD",
-        "projectPath": "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\ProjectD.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\obj\\",
+        "projectPath": "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\ProjectD\\ProjectD.csproj",
+        "packagesPath": "C:\\Users\\huday\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\ProjectD\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\huday\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -80,6 +80,10 @@
               "target": "Package",
               "version": "[9.0.3, )"
             },
+            "Microsoft.Extensions.Caching.Memory": {
+              "target": "Package",
+              "version": "[9.0.7, )"
+            },
             "NBomber": {
               "target": "Package",
               "version": "[6.0.2, )"
@@ -119,6 +123,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[8.0.0, )"
+            },
+            "Swashbuckle.AspNetCore.Annotations": {
+              "target": "Package",
+              "version": "[9.0.1, )"
             }
           },
           "imports": [
@@ -140,21 +148,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\User\\Project D\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj": {
+    "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Project D\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj",
+        "projectUniqueName": "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj",
         "projectName": "XunitTest",
-        "projectPath": "C:\\Users\\User\\Project D\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Project D\\ProjectD\\Tests\\XunitTest\\obj\\",
+        "projectPath": "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\Tests\\XunitTest\\XunitTest.csproj",
+        "packagesPath": "C:\\Users\\huday\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\Tests\\XunitTest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\huday\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -166,8 +174,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\ProjectD.csproj": {
-                "projectPath": "C:\\Users\\User\\Project D\\ProjectD\\ProjectD\\ProjectD.csproj"
+              "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\ProjectD\\ProjectD.csproj": {
+                "projectPath": "C:\\Users\\huday\\Documents\\GitHub\\ProjectD\\ProjectD\\ProjectD.csproj"
               }
             }
           }
@@ -229,7 +237,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
