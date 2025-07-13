@@ -456,7 +456,7 @@ namespace ProjectD
             Assert.Equal("/api/page/1", error.Url); // check Url.
             Assert.Contains("not found", error.Details.ToLower()); // check detail.
             Assert.NotEqual("An Error occured", error.Message); // check if default message is NOT used.
-            Assert.Equal("An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
+            Assert.Equal("An error occurred. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvenience.", error.Message);
         }
 
         [Fact]
@@ -558,7 +558,7 @@ namespace ProjectD
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             var error = Assert.IsType<Error>(notFoundResult.Value); // check if NotFoundObjectResult has an Error object
 
-            Assert.Equal("An error occured. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvinence.", error.Message);
+            Assert.Equal("An error occurred. There are no Touchpoints found make contact with Webprovider if its ongoing issue. Sorry for inconvenience.", error.Message);
         }
 
         [Fact]
